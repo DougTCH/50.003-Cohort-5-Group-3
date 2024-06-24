@@ -1,43 +1,31 @@
-import { useState } from 'react'
-import './header.css'
-import viteLogo from '/vite.svg'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './header.css';
+import viteLogo from '/vite.svg';
+import bankLogo from './assets/Banklogo.svg'
 
 function Header() {
-
-    return(
-    <main>
-        <div className = "Heading">
+  return (
+    <header>
+      <div className="Heading">
+        <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
         
-            <img className = "logo" src = {viteLogo}  alt = "Fetch Banking Logo" />
-            <div className = "BankName">F E T C H <div className='BankName2'>BANKING COMPANY</div> </div>
-            <div className = "Header_Buttons">
-                <button onClick={() => alert("PROFILE")}className = "Profile">Profile</button>
-                <button className = "Logout">Logout</button>
-            </div>
-        
+        <div className="Header_Buttons">
+          <button onClick={() => alert("PROFILE")} className="Profile">Profile</button>
+          <button className="Logout">Logout</button>
         </div>
-        <nav className="nav">
-                <a href="#">My Accounts</a>
-                <a href="#">Transfer</a>
-                <a href="#">Pay</a>
-                <a href="#">Cards</a>
-                <a href="#">Apply</a>
-                <a href="#">Loyalty Points<sup>NEW!</sup></a>
-        </nav>
-    
-       
-
-
-
-
-    </main>
-    )
-
-
+      </div>
+      <nav className="nav">
+        <Link to="/">Home</Link>
+        <Link to="/accounts">My Accounts</Link>
+        <Link to="/transfer">Transfer</Link>
+        <Link to="/pay">Pay</Link>
+        <Link to="/cards">Cards</Link>
+        <Link to="/apply">Apply</Link>
+        <Link to="/loyaltypoints">Loyalty Points<sup>NEW!</sup></Link>
+      </nav>
+    </header>
+  );
 }
-    
 
-
-
-
-export default Header
+export default Header;
