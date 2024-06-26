@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+    
+}
+
+
+.Heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Ensures items are centered vertically */
+}
+
+.logo {
+    height: 5em;
+    padding: 1em;
+}
+
+.BankName {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 0px;
+    margin-right: 1em; /* Adds some space between BankName and BankName2 */
+}
+
+.BankName2 {
+    font-size: 0.43em;
+    font-weight: 700;
+    color: #e21212;
+    margin-bottom: 20px;
+}
+
+.Header_Buttons{
+    display: flex;
+    color: white; 
+    gap:10px;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    margin-right: 1em;
+    height: 5em;
+    margin-left: auto;
+
+}
+.Logout{
+    background-color: #df9010;
+    color: white;
+    border: none;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+}  
+.Profile{
+    background-color: #db1717;
+    color: white;
+    border: none;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+
+}
+
+.nav {
+    background-color:rgb(236, 88, 88);
+    display: flex; 
+    gap: 5vw;
+    padding: 1em;
+  
+}
+
+a{
+    color:white;
+    text-decoration:none ;
+    margin : auto;
+    
+}
