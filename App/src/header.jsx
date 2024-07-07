@@ -4,7 +4,9 @@ import './header.css';
 import viteLogo from '/vite.svg';
 import bankLogo from './assets/Banklogo.svg'
 
-function Header() {
+
+function Header({ onLogout}) {
+
   return (
     <header>
       <div className="Heading">
@@ -12,7 +14,7 @@ function Header() {
         
         <div className="Header_Buttons">
           <button onClick={() => alert("PROFILE")} className="Profile">Profile</button>
-          <button className="Logout">Logout</button>
+          <button onClick= {onLogout} className="Logout">Logout</button>
         </div>
       </div>
       <nav className="nav">
