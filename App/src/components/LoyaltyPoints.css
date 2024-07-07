@@ -1,0 +1,45 @@
+.container{
+    display: flex;
+    justify-content: center;
+    padding-top: 30px;
+}
+.TC-bar {
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    
+    background-color: white;
+    border: 5px solid black;
+    
+    border-radius: 100px;
+
+  }
+  
+  .TC-link {
+    display: flex;
+    padding: 10px 20px;
+    margin: 3px;
+    background-color: white;
+    color: #0f1537;
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-family: Helvetica;
+    font-size: 22px;
+    font-weight: bold;
+    width: 200px;
+    border: none;
+  }
+  
+  .TC-link:hover {
+    background-color: #0f1537; 
+    color: white;
+  }
+
+  .fetch-box{
+    border: 2px solid black;
+    width: 200px
+  }
+  

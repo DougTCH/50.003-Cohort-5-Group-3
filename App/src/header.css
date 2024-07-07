@@ -47,15 +47,19 @@
     border: none;
     font-size: 1em;
     font-weight: 700;
+    width: 100px;
     cursor: pointer;
+    border-radius: 25px;
 }  
 .Profile{
     background-color: #db1717;
     color: white;
     border: none;
     font-size: 1em;
-    font-weight: 700;
+    font-weight: bold;
     cursor: pointer;
+    width: 100px;
+    border-radius: 25px;
 
 }
 
