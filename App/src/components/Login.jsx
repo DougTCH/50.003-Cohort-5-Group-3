@@ -11,6 +11,12 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+        //backdoor for offline testing
+        if(email === 'admin@gmail.com' && password === 'admin'){
+            localStorage.setItem('token', 'admin');
+            onLogin();
+            navigate('/');
+        }
       const response = await axios.post('http://localhost:5000/api/login', { email, password });
       localStorage.setItem('token', response.data.token);
       onLogin();
