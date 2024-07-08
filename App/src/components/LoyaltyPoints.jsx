@@ -1,6 +1,8 @@
 import React from 'react';
 import './LoyaltyPoints.css';
 import { useState } from 'react';
+//import bankLogo from 'App/src/assets/Banklogo.svg';
+
 
 function LoyaltyPoints() {
   const [currentSection, setCurrentSection] = useState('')
@@ -23,19 +25,19 @@ function LoyaltyPoints() {
           <p>Sender</p>
         </div>
         <div className="fetch-box">
-          <img src="/assets/BankLogo.svg" alt="Bank Logo" />
+          
           Fetch
         </div>
       </section>
     )}
 
     {currentSection === 'transaction' && (
-      <section id="bridge-section" className="section">
+      <section id="transaction-section" className="section">
       </section>
     )}
     
     {currentSection === 'dashboard' && (
-      <section id="bridge-section" className="section">
+      <section id="dashboard-section" className="section">
       </section>
     )}
 

@@ -3,17 +3,18 @@
     justify-content: center;
     padding-top: 30px;
 }
-.TC-bar {
-    display: inline-flex; 
-    align-items: center;
-    justify-content: center;
-    
-    background-color: white;
-    border: 5px solid black;
-    
-    border-radius: 100px;
 
-  }
+  .TC-bar {
+      display: inline-flex; 
+      align-items: center;
+      justify-content: center;
+      
+      background-color: white;
+      border: 5px solid black;
+      
+      border-radius: 100px;
+
+    }
   
   .TC-link {
     display: flex;
@@ -38,8 +39,16 @@
     color: white;
   }
 
+.bridge-section{
+  display: flex;
+  justify-content: center;
+
+}
+
   .fetch-box{
-    border: 2px solid black;
-    width: 200px
-  }
+      border: 2px solid black;
+      width: 200px
+    }
+
+
   
