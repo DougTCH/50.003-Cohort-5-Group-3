@@ -27,6 +27,56 @@ function LoyaltyPoints() {
     {value: 'house', label: 'PremiumSteakHouse'},
     {value: 'royal', label: 'RoyalAir'},
   ]
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      height: '60px', // Set the height
+      minHeight: '60px', // Ensure minimum height
+      borderColor: state.isFocused ? '#0f1537' : '#0f1537', // Change border color on focus
+      '&:hover': {
+        borderColor: '#0f1537',
+      },
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%', // Full width
+      maxWidth: '400px',
+    }),
+    menu: (provided) => ({
+      ...provided,
+      marginTop: '0',
+      border: '1px solid #0f1537',
+      width: '100%', // Full width
+      maxWidth: '400px', // Optional: Limit max width to match fetch-box
+    }),
+    menuList: (provided) => ({
+      ...provided,
+      width: '100%', // Full width
+      maxWidth: '400px', // Optional: Limit max width to match fetch-box
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: 'gray', // Customize placeholder color
+      fontSize: '16px',
+      fontStyle: 'italic'
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: 'black', // Customize single value color
+      display: 'flex',
+      alignItems: 'center',
+    }),
+    options: (provided) => ({
+      ...provided,
+      display: 'flex',
+      alignItems: 'center',
+      padding: '10px',
+      backgroundColor: state.isSelected ? '#888888' : state.isFocused ? '#888888' : 'white',
+      color: '#1A1E43',
+     '&:hover': {
+        backgroundColor: '#fffffff',
+        },
+  }),
+};
   const [isClearable, setIsClearable] = useState(true);
   const [isSearchable, setIsSearchable] = useState(true);
 
@@ -92,86 +142,89 @@ function LoyaltyPoints() {
 
   return (
     <>
-    <div className="container">
-      <img src=""></img>
-      <div className="TC-bar">
-        <button className="TC-link" onClick={() => setCurrentSection('bridge')}>Bridge</button>
-        <button className="TC-link" onClick={() => setCurrentSection('transaction')}>Transaction</button>
-        <button className="TC-link" onClick={() => setCurrentSection('dashboard')}>Dashboard</button>
-        <button className="TC-link" onClick={() => setCurrentSection('explore')}>Explore</button>
-      </div>
-    </div>
-
-    {currentSection === 'bridge' && (
-      <section id="bridge-section" className="section">
-        <div><p>Sender</p></div>
-        <div className="fetch-box">Fetch</div>
-        <div><p>Receiver</p></div>
-        <Select 
-          className="select-merchant-menu"
-          classNamePrefix="select"
-          isClearable={isClearable}
-          isSearchable={isSearchable}
-          options={options} 
-          onChange={handleChange} 
-          placeholder={placeholder}
-          onMenuOpen={handleMenuOpen} // change placeholder when menu opens
-          onMenuClose={handleMenuClose}
-          value={selectedOption}
-          onInputChange={(value, { action }) => {
-            if (action === 'input-change' && value === '') {
-              // When the user clears the input, reset the states
-              setSelectedOption(null);
-              setInputState('initial');
-            }
-          }}
-        />
-        {selectedOption && (
-          <div className="input-container">
-            {inputState === 'initial' ? (
-              <>
-              <input 
-                type="text" 
-                id="memIdBox" 
-                name="memIdBox" 
-                placeholder="Your Membership ID e.g. ROYAL123456A" 
-                value={inputValue1} 
-                onChange={handleInputChange1} 
-                onKeyDown={(e) => handleKeyDown(e, 'memIdBox')}
-              />
-              </>
-            ) : inputState === 'validated' && (
-              <>
-              <p>Amount You Are Sending</p>
-              <div className="amount-container">
-                <input 
-                  type="text" 
-                  id="amountBox" 
-                  name="amountBox" 
-                  placeholder="0" 
-                  value={inputValue2} 
-                  onChange={handleInputChange2} 
-                  onKeyDown={(e) => handleKeyDown(e, 'amountBox')}
-                />
-                <p className="fetch-points">FETCH Points</p>
-                <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
-              </div>
-              </>
-            )}
+      <div className="container">
+        <div className="wrapper">
+          <img src="" alt=""></img>
+          <div className="TC-bar">
+            <button className="TC-link" onClick={() => setCurrentSection('bridge')}>Bridge</button>
+            <button className="TC-link" onClick={() => setCurrentSection('transaction')}>Transaction</button>
+            <button className="TC-link" onClick={() => setCurrentSection('dashboard')}>Dashboard</button>
+            <button className="TC-link" onClick={() => setCurrentSection('explore')}>Explore</button>
           </div>
-        )}
-      </section>
-    )}
-    {currentSection === 'transaction' && (
-      <section id="transaction-section" className="section">
-      </section>
-    )}
-    {currentSection === 'dashboard' && (
-      <section id="dashboard-section" className="section">
-      </section>
-    )}
+  
+          {currentSection === 'bridge' && (
+            <section id="bridge-section" className="bridge-section">
+              <div className="label"><p>Sender</p></div>
+              <div className="fetch-box">Fetch</div>
+              <div className="label"><p>Receiver</p></div>
+              <Select 
+                className="select-merchant-menu"
+                classNamePrefix="select"
+                isClearable={isClearable}
+                isSearchable={isSearchable}
+                options={options} 
+                onChange={handleChange} 
+                placeholder={placeholder}
+                onMenuOpen={handleMenuOpen}
+                onMenuClose={handleMenuClose}
+                value={selectedOption}
+                styles={customStyles}
+                onInputChange={(value, { action }) => {
+                  if (action === 'input-change' && value === '') {
+                    setSelectedOption(null);
+                    setInputState('initial');
+                  }
+                }}
+              />
+              {selectedOption && (
+                <div className="input-container">
+                  {inputState === 'initial' ? (
+                    <>
+                      <input 
+                        type="text" 
+                        id="memIdBox" 
+                        name="memIdBox" 
+                        placeholder="Your Membership ID e.g. ROYAL123456A" 
+                        value={inputValue1} 
+                        onChange={handleInputChange1} 
+                        onKeyDown={(e) => handleKeyDown(e, 'memIdBox')}
+                      />
+                    </>
+                  ) : inputState === 'validated' && (
+                    <>
+                      <div className="label"><p>Amount You Are Sending</p></div>
+                      <div className="amount-container">
+                        <input 
+                          type="text" 
+                          id="amountBox" 
+                          name="amountBox" 
+                          placeholder="0" 
+                          value={inputValue2} 
+                          onChange={handleInputChange2} 
+                          onKeyDown={(e) => handleKeyDown(e, 'amountBox')}
+                        />
+                        <p className="fetch-points">FETCH Points</p>
+                        <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </section>
+          )}
+          {currentSection === 'transaction' && (
+            <section id="transaction-section" className="section">
+            </section>
+          )}
+          {currentSection === 'dashboard' && (
+            <section id="dashboard-section" className="section">
+            </section>
+          )}
+        </div> {/* Closing tag for wrapper */}
+      </div> {/* Closing tag for container */}
     </>
-);
+  );
+  
 };
 
 
