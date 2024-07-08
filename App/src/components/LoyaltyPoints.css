@@ -4,10 +4,18 @@
     padding-top: 30px;
 }
 
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Ensuring full width */
+  max-width: 1200px; /* Optional: Limit max width */
+}
+
   .TC-bar {
       display: inline-flex; 
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       
       background-color: white;
       border: 5px solid black;
@@ -39,16 +47,139 @@
     color: white;
   }
 
-.bridge-section{
+#bridge-section{
+  justify-content: center; 
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px; /* Added margin for spacing */
+  width: 100%; /* Ensuring full width */
+  text-align: left;
+}
+.label {
+  width: 100%;
+  text-align: left;
+  font-size: 16px; 
+  color: #888888;
+}
+
+  .fetch-box {
+    border: 4px solid black;
+    width: 100%;
+    max-width: 150%;
+    text-align: left;
+    padding: 10px;
+    margin: 10px 0; /* Added margin for spacing */
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .fetch-box {
+    border: 4px solid black;
+    width: 100%;
+    max-width: 150%;
+    padding: 10px;
+    text-align: left;
+    /*display: flex;*/
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  
+  .fetch-label {
+    font-weight: bold;
+  }
+  
+  .available-points {
+    font-size: 0.9em;
+    color: gray;
+  }
+  
+
+  /* dropdown menu */
+/*(dropdown trigger)*/
+.container .select__control {
+  /*border-radius: 20px; /* Rounded corners */
+  border: 4px solid #1A1E43; /*border */
+  background-color: #FFFFFF; /* Light gray background */
+  padding: 20px; /* Internal padding */
+  font-size: 16px; /* Font size */
+  color: #1A1E43; /* Text color */
+  width: 100%; /* Full width */
+  max-width: 100%; /* Maximum width */
+  box-sizing: border-box;
+}
+
+.container .select__control:hover {
+  border-color: #1A1E43;
+}
+
+/* Style for the dropdown menu */
+.container .select__control {
+  width: 100%; /* Set the same fixed width as fetch box */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.container .select__menu {
+  border: 4px solid #1A1E43; /* Black border */
+  background-color: #FFFFFF; /* White background */
+  padding: 10px; /* Internal padding */
+  font-size: 16px; /* Font size */
+  color: #1A1E43; /* Text color */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  box-sizing: border-box;
+}
+
+.container .select__menu-list {
+  max-height: 200px; /* Set maximum height for the dropdown list */
+  overflow-y: auto; /* Add scrollbar if the list is too long */
+}
+
+.container .select__menu-item {
+  padding: 8px 12px; /* Padding for items */
+  cursor: pointer; /* Pointer cursor for items */
+}
+
+.container .select__menu-item:hover {
+  background-color: #888888; /* Blue background on hover */
+  color: #fff; /* White text on hover */
+}
+
+/* styles for the input container */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  width: 100%;
+  max-width: 100%;
+}
+.input-container input {
+  width: 100%;
+  /* max-width: 300px; /* Limiting the width of inputs */
+  padding: 10px;
+  margin: 10px 0;
+  border: 4px solid #1A1E43;
+  font-size: 16px;
+  color: #1A1E43;
+  background-color: #FFFFFF;
+}
+
+#Max{
+  background-color: #1A1E43; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: bold;
 
 }
 
-  .fetch-box{
-      border: 2px solid black;
-      width: 200px
-    }
+
+
 
 
   
