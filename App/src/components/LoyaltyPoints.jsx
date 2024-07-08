@@ -155,7 +155,10 @@ function LoyaltyPoints() {
           {currentSection === 'bridge' && (
             <section id="bridge-section" className="bridge-section">
               <div className="label"><p>Sender</p></div>
-              <div className="fetch-box">Fetch</div>
+              <div className="fetch-box">
+                <p className="fetch-label">Fetch</p>
+                <p className="available-points">Available: 1000 Points</p>
+              </div>
               <div className="label"><p>Receiver</p></div>
               <Select 
                 className="select-merchant-menu"
@@ -168,7 +171,7 @@ function LoyaltyPoints() {
                 onMenuOpen={handleMenuOpen}
                 onMenuClose={handleMenuClose}
                 value={selectedOption}
-                styles={customStyles}
+                //styles={customStyles}
                 onInputChange={(value, { action }) => {
                   if (action === 'input-change' && value === '') {
                     setSelectedOption(null);
