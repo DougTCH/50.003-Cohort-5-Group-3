@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import './register.css';
+import bankLogo from '../assets/Banklogo.svg';
+
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -20,22 +23,35 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
-      <div>
-        <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+    <div className="register-page">
+      <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
+      <div className="container">
+        
+        <div className="register-box">
+          <h2>Register</h2>
+          <form onSubmit={handleSubmit}>
+            <label></label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+            />
+            <button type="submit" className="register-button">Register</button>
+              <p>{message}</p>
+            <p>Already have an account? <Link to="/login">Login</Link></p>
+          </form>
+        </div>
       </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
-      <button type="submit">Register</button>
-      <p>{message}</p>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
-    </form>
+    </div>
   );
 };
 

@@ -1,0 +1,108 @@
+:root {
+    --primary-color: #D95436;
+    --secondary-color: #2C3E50;
+    --tertiary-color: #FFF;
+    --quaternary-color: #000;
+}
+
+.register-page {
+    background: linear-gradient(
+        to top,
+        var(--primary-color),
+        var(--primary-color) 10rem,
+        transparent 1rem,
+        transparent 100%
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.register-page .logo{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+
+}
+
+.register-page .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.register-page .register-box {
+    background: linear-gradient(
+        to bottom,
+        var(--primary-color),
+        var(--primary-color) 4rem,
+        transparent 1rem,
+        transparent 100%
+    );
+    background-color: var(--tertiary-color);
+    border: 3px solid var(--quaternary-color);
+    border-radius: 15px;
+    padding: 20px;
+    width: 300px;
+    position: relative;
+    text-align: center;
+}
+
+
+.register-page .register-box h2 {
+    color: var(--tertiary-color);
+    margin-bottom: 20px;
+}
+
+.register-page form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-page form label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.register-page form input {
+    border: 1px solid var(--secondary-color);
+    color: black; 
+    background-color: white;    
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.register-page .register-button {
+    background-color: var(--primary-color);
+    color: var(--tertiary-color);
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.register-page form p {
+    margin: 0;
+}
+
+.register-page form p a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.register-page form p a:hover {
+    text-decoration: underline;
+}
+
