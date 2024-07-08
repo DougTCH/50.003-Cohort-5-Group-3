@@ -39,16 +39,26 @@
     color: white;
   }
 
-.bridge-section{
+#bridge-section{
+  /*display: flex;*/
+  justify-content: center; 
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px; /* Added margin for spacing */
+  width: 100%; /* Ensuring full width */
+  
 
 }
 
-  .fetch-box{
-      border: 2px solid black;
-      width: 200px
-    }
+  .fetch-box {
+    border: 2px solid black;
+    width: 200px;
+    text-align: center;
+    padding: 10px;
+    margin: 10px 0; /* Added margin for spacing */
+    border-radius: 10px; /* Rounded corners */
+  }
 
 
   
