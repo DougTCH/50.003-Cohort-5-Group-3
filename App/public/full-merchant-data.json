@@ -1,0 +1,222 @@
+[
+    {
+        "Loyalty Program ID": "BEST_MOVERS",
+        "Loyalty Program Name": "Best Movers",
+        "Loyalty Currency Name": "MOVE",
+        "Processing Time": "Instant",
+        "Description": "Moving, shipping, and heavy transports all in one app!",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/BEST_MOVERS.png",
+        "Conversion Rate": 5
+    },
+    {
+        "Loyalty Program ID": "CITY_GREEN",
+        "Loyalty Program Name": "City Green",
+        "Loyalty Currency Name": "CITY",
+        "Processing Time": "Instant",
+        "Description": "City green, it's easy to go green!",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/CITY_GREEN.png",
+        "Conversion Rate": 50
+    },
+    {
+        "Loyalty Program ID": "FAST_FRUITS",
+        "Loyalty Program Name": "Fast Fruits",
+        "Loyalty Currency Name": "FRUST",
+        "Processing Time": "Instant",
+        "Description": "Singapore's number one choice for grocery shopping",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/FAST_FRUITS.png",
+        "Conversion Rate": 22
+    },
+    {
+        "Loyalty Program ID": "FRESH_BAG",
+        "Loyalty Program Name": "Fresh Bag",
+        "Loyalty Currency Name": "FRESH",
+        "Processing Time": "Instant",
+        "Description": "Freshness every day effortlessly with curated recipes delivered to your doorstep!",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/FRESH_BAG.png",
+        "Conversion Rate": 11
+    },
+    {
+        "Loyalty Program ID": "GO_CART",
+        "Loyalty Program Name": "Go Cart",
+        "Loyalty Currency Name": "CART",
+        "Processing Time": "Instant",
+        "Description": "E-commerce platform where you can find anything, anywhere",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/GO_CART.png",
+        "Conversion Rate": 33
+    },
+    {
+        "Loyalty Program ID": "GOLDEN_HOTELS",
+        "Loyalty Program Name": "Golden Hotels",
+        "Loyalty Currency Name": "GOLD",
+        "Processing Time": "Instant",
+        "Description": "Experience premium in Singapore every step of the way",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/GOLDEN_HOTELS.png",
+        "Conversion Rate": 0.9
+    },
+    {
+        "Loyalty Program ID": "HIS_AND_HERS",
+        "Loyalty Program Name": "His And Hers",
+        "Loyalty Currency Name": "HNH",
+        "Processing Time": "Instant",
+        "Description": "With you for all your special occasions. Fitted suits and dresses",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/HIS_AND_HERS.png",
+        "Conversion Rate": 10
+    },
+    {
+        "Loyalty Program ID": "KINGSMAN_SERVICES",
+        "Loyalty Program Name": "Kingsman Services",
+        "Loyalty Currency Name": "KING",
+        "Processing Time": "Instant",
+        "Description": "The longest standing concierge service. Trusted by generations",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/KINGSMAN_SERVICES.png",
+        "Conversion Rate": 1.1
+    },
+    {
+        "Loyalty Program ID": "NATIONAL_BANKING",
+        "Loyalty Program Name": "National Banking",
+        "Loyalty Currency Name": "LION",
+        "Processing Time": "Instant",
+        "Description": "Your trusted bank counted on by countless other businesses",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/NATIONAL_BANKING.png",
+        "Conversion Rate": 1
+    },
+    {
+        "Loyalty Program ID": "PASSION_PAY",
+        "Loyalty Program Name": "Passion Pay",
+        "Loyalty Currency Name": "PAY",
+        "Processing Time": "Instant",
+        "Description": "Pay with ease and shop with passion! Earn rewards every day",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/PASSION_PAY.png",
+        "Conversion Rate": 6
+    },
+    {
+        "Loyalty Program ID": "PREMIUM_STEAKHOUSE",
+        "Loyalty Program Name": "Premium Steak House",
+        "Loyalty Currency Name": "HOUSE",
+        "Processing Time": "Instant",
+        "Description": "Experts at delivering the ultimate steak experience; there's no other like us!",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/PREMIUM_STEAKHOUSE.png",
+        "Conversion Rate": 3
+    },
+    {
+        "Loyalty Program ID": "ROYAL_AIR",
+        "Loyalty Program Name": "Royal Air",
+        "Loyalty Currency Name": "ROYAL",
+        "Processing Time": "Instant",
+        "Description": "Fly Royal, fly with us. Never a trip unremarkable",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/ROYAL_AIR.png",
+        "Conversion Rate": 1.35
+    },
+    {
+        "Loyalty Program ID": "TAKO_RAMEN",
+        "Loyalty Program Name": "Tako Ramen",
+        "Loyalty Currency Name": "TAKO",
+        "Processing Time": "Instant",
+        "Description": "Yummy takoyaki every day! Opens 10am to 10pm daily",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/TAKO_RAMEN.png",
+        "Conversion Rate": 5
+    },
+    {
+        "Loyalty Program ID": "OUTDOOR_BROS",
+        "Loyalty Program Name": "Outdoor Bros",
+        "Loyalty Currency Name": "BROS",
+        "Processing Time": "Instant",
+        "Description": "Gear that never disappoints, join the outdoors, join the bros",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/OUTDOOR_BROS.png",
+        "Conversion Rate": 1.5
+    },
+    {
+        "Loyalty Program ID": "SUSHI_CHOPSTICKS",
+        "Loyalty Program Name": "Sushi Chopsticks",
+        "Loyalty Currency Name": "SUSHI",
+        "Processing Time": "Instant",
+        "Description": "Sushi served like never before. Experience freshness on the go!",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/SUSHI_CHOPSTICKS.png",
+        "Conversion Rate": 5
+    },
+    {
+        "Loyalty Program ID": "PALM_CRUISE",
+        "Loyalty Program Name": "Palm Cruise",
+        "Loyalty Currency Name": "PALM",
+        "Processing Time": "Instant",
+        "Description": "The only vacation you don't plan for. Take time for yourself, take palm cruise.",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/PALM_CRUISE.png",
+        "Conversion Rate": 2
+    },
+    {
+        "Loyalty Program ID": "GENTLEMEN_GOLF",
+        "Loyalty Program Name": "Gentlemen Golf",
+        "Loyalty Currency Name": "GOLF",
+        "Processing Time": "Instant",
+        "Description": "The gentlemen's club, the only club you need.",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/GENTLEMEN_GOLF.png",
+        "Conversion Rate": 0.8
+    },
+    {
+        "Loyalty Program ID": "THE_NATURE_TREE",
+        "Loyalty Program Name": "The Nature Tree",
+        "Loyalty Currency Name": "NATURE",
+        "Processing Time": "Instant",
+        "Description": "Shop for guilt-free eco-friendly products you'll want to use",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/THE_NATURE_TREE.png",
+        "Conversion Rate": 1
+    },
+    {
+        "Loyalty Program ID": "JOYSPRING_TOYS",
+        "Loyalty Program Name": "Joy Spring Toys",
+        "Loyalty Currency Name": "TOYS",
+        "Processing Time": "Instant",
+        "Description": "Antique toys re-engineered for maximum nostalgia",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/JOYSPRING_TOYS.png",
+        "Conversion Rate": 4
+    },
+    {
+        "Loyalty Program ID": "PETS_HOUSE",
+        "Loyalty Program Name": "Pets House",
+        "Loyalty Currency Name": "PETS",
+        "Processing Time": "Instant",
+        "Description": "There's no place like home and a happy, healthy pet!",
+        "Enrolment Link": "https://forms.office.com/r/PyDSsLsJWF",
+        "Terms & Conditions Link": "https://sutdapac.sharepoint.com/:w:/s/ESCProjectTerm5/Ee30Uf0L8r5Asdj0tX8MVNcBvXi-d93yCVbC0XB56wsJjQ?e=OAvjEw",
+        "Full Logo Path": "App/public/MERCHANT_LOGO_ASSETS/PETS_HOUSE.png",
+        "Conversion Rate": 3
+    }
+]
