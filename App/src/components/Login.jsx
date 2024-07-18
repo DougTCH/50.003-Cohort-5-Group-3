@@ -21,7 +21,14 @@ const Login = ({ onLogin }) => {
         navigate('/');
       } else {
         const response = await axios.post('http://localhost:5001/api/login', { email, password });
-        localStorage.setItem('token', response.data.token);
+        const data = response.data;
+        const {user, token} = data;
+        localStorage.setItem('token', token);
+        //set session data 
+        sessionStorage.setItem('firstName', user.firstName);
+        sessionStorage.setItem('lastName', user.lastName);
+        sessionStorage.setItem('points', user.points);
+        //console.log('set session data' , user.firstName);
 
         //login on transfer connect
         /*

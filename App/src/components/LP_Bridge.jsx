@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import {getUserData} from '../../utils/userdata';
+
 
 const Bridge = ({ options, customStyles }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -8,6 +10,18 @@ const Bridge = ({ options, customStyles }) => {
   const [inputState, setInputState] = useState('initial');
   const [placeholder, setPlaceholder] = useState("Select a participating merchant");
 
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    points: 0,
+  });
+
+  useEffect(() => {
+    const data = getUserData();
+    setUserData(data);
+  }, []);
+//note might need to run on every render, remove [] 
+  
   const handleMenuOpen = () => {
     setPlaceholder("Search by name");
   };
@@ -50,7 +64,8 @@ const Bridge = ({ options, customStyles }) => {
   useEffect(() => {
     const memIdBox = document.getElementById('memIdBox');
     const amountBox = document.getElementById('amountBox');
-
+  
+    
     if (memIdBox) {
       memIdBox.addEventListener('keydown', (e) => handleKeyDown(e, 'memIdBox'));
     }
@@ -68,7 +83,7 @@ const Bridge = ({ options, customStyles }) => {
   }, [inputValue1, inputValue2]);
 
   const handleMaxClick = () => {
-    setInputValue2('1000');
+    setInputValue2(userData.points.toString());
   };
 
   return (
@@ -76,7 +91,7 @@ const Bridge = ({ options, customStyles }) => {
       <div className="label"><p>Sender</p></div>
       <div className="fetch-box">
         <p className="fetch-label">Fetch</p>
-        <p className="available-points">Available: 1000 Points</p>
+        <p className="available-points">Available: {userData.points} Points</p>
       </div>
       <div className="label"><p>Receiver</p></div>
       <Select
