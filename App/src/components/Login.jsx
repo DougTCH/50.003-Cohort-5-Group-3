@@ -24,8 +24,10 @@ const Login = ({ onLogin }) => {
         localStorage.setItem('token', response.data.token);
 
         //login on transfer connect
-        /*const tcResponse = await axios.post('http://localhost:3000/auth/login', { email, password});
-        localStorage.setItem('tctoken'. tcResponse.data.token );
+        /*
+        let app_code = "FETCH" ; 
+        const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, app_code  });
+        localStorage.setItem('tctoken', tcResponse.data.token );
         */
         onLogin();
         navigate('/');
