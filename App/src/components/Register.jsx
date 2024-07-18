@@ -17,7 +17,7 @@ const Register = () => {
     e.preventDefault();
     try {
       //register on bank app 
-      const response = await axios.post('http://localhost:5000/api/register', { email, password , first_name , last_name });
+      const response = await axios.post('http://localhost:5001/api/register', { email, password , first_name , last_name });
       setMessage(response.data.message);
 
       //register on TC app 
