@@ -22,6 +22,11 @@ const Login = ({ onLogin }) => {
       } else {
         const response = await axios.post('http://localhost:5000/api/login', { email, password });
         localStorage.setItem('token', response.data.token);
+
+        //login on transfer connect
+        /*const tcResponse = await axios.post('http://localhost:3000/auth/login', { email, password});
+        localStorage.setItem('tctoken'. tcResponse.data.token );
+        */
         onLogin();
         navigate('/');
       }

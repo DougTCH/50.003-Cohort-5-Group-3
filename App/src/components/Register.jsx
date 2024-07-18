@@ -14,8 +14,15 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      //register on bank app 
       const response = await axios.post('http://localhost:5000/api/register', { email, password });
       setMessage(response.data.message);
+
+      //register on TC app 
+      /*
+      await axios.post('http://localhost:3000/api/register', { email, password}); 
+      */
+      //nagivate to login after done 
       navigate('/login');
     } catch (error) {
       setMessage('Registration failed');
