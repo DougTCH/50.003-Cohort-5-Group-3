@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import {getUserData} from '../../utils/userdata';
-
+import './LP_Bridge.css';
 
 const Bridge = ({ options, customStyles }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -139,6 +139,7 @@ const Bridge = ({ options, customStyles }) => {
                   value={inputValue2}
                   onChange={handleInputChange2}
                   onKeyDown={(e) => handleKeyDown(e, 'amountBox')}
+                  
                 />
                 <p className="fetch-points">FETCH Points</p>
                 <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
