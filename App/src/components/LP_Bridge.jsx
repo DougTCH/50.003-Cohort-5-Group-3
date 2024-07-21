@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import Collapsible from 'react-collapsible';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms } from '../../utils/api.jsx'
+import { fetchLoyaltyPrograms } from '../../utils/api.jsx';
+import arrowImage from '../assets/DropdownArrowBlue.svg';
 
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
@@ -13,6 +15,8 @@ const Bridge = ({ options, customStyles }) => {
   const [inputState, setInputState] = useState('initial');
   const [placeholder, setPlaceholder] = useState("Select a participating merchant");
   const [regexPattern, setRegexPattern] = useState(null);
+  const [submitTransaction, setSubmitTransaction] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [userData, setUserData] = useState({
     firstName: '',
@@ -47,6 +51,7 @@ const Bridge = ({ options, customStyles }) => {
     setInputValue1('');
     setInputValue2('');
     setInputError('');
+    setSubmitTransaction(false);
     if (option) {
       const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
       if (selectedProgram && selectedProgram.pattern) {
@@ -63,6 +68,11 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleInputChange2 = (e) => {
     setInputValue2(e.target.value);
+    if (e.target.value) {
+      setSubmitTransaction(true);
+    } else {
+      setSubmitTransaction(false);
+    }
   };
 
   const handleInputSubmit = (inputId) => {
@@ -105,12 +115,21 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleMaxClick = () => {
     setInputValue2(userData.points.toString());
+    setSubmitTransaction(true);
   };
 
   const selectOptions = loyaltyPrograms.map(program => ({
     value: program.pid,
     label: program.name,
   }));
+
+  const triggerElement = (
+    <div className="collapsible-trigger">
+      Transfer Breakdown
+      <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
+    </div>
+  );
+
 
   return (
     <section id="bridge-section" className="bridge-section">
@@ -171,6 +190,26 @@ const Bridge = ({ options, customStyles }) => {
                 <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
               </div>
             </>
+          )}
+          {submitTransaction && (
+            <>
+            <Collapsible 
+              trigger={triggerElement}
+              className='collapsible-breakdown' 
+              triggerTagName='div' 
+              transitionTime={10}
+              onOpening={() => setIsOpen(true)}
+              onClosing={() => setIsOpen(false)}>
+              <div className="transaction-details">
+                <p>From: FETCH BANK (-{inputValue2} FETCH)</p>
+                <p>To: {selectedOption ? selectOptions.label : ''} (+{inputValue2} ROYAL)</p>
+                <p>Account Balance: {userData.points - (parseInt(inputValue2, 10) || 0)} FETCH Points</p>
+              </div>
+            </Collapsible>
+            <button type="button" className="confirm-transaction-button">Confirm Transaction</button>
+            <p>All transfers are final. </p>
+            </>
+            
           )}
         </div>
       )}
