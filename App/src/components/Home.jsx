@@ -1,7 +1,17 @@
 import React from 'react';
 import home_background from '../assets/home_advert.png';
-
+import {getUserData} from '../../utils/userdata';
+import { useEffect, useState } from 'react';
 function Home() {
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    points: 0,
+  })
+  useEffect(() => {
+    const data = getUserData();
+    setUserData(data);
+  }, []);
   return (
     <div style={{ position: 'relative', width: '100%' }}>
       <img src={home_background} alt="Home" style={{ width: '100%' }} />
@@ -17,7 +27,9 @@ function Home() {
         }}
       >
         <h1>Home</h1>
-        <p>Welcome to the Home page.</p>
+        <p>Welcome to the Home page, {userData.firstName} {userData.lastName}.</p>
+        <p>You have, {userData.points} points.</p>
+        <p>Membership Id is {userData.user_id}. </p>
       </div>
     </div>
   );

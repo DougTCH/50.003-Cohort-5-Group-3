@@ -9,18 +9,21 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       //register on bank app 
-      const response = await axios.post('http://localhost:5000/api/register', { email, password });
+      const response = await axios.post('http://localhost:5001/api/register', { email, password , firstName , lastName });
       setMessage(response.data.message);
 
       //register on TC app 
       /*
-      await axios.post('http://localhost:3000/api/register', { email, password}); 
+      let app_code = "FETCH"; 
+      await axios.post('http://localhost:3000/auth/register', { username: email, password, app_code}); 
       */
       //nagivate to login after done 
       navigate('/login');
@@ -50,6 +53,20 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
+              required
+            />
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First Name"
+              required
+            />
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last Name"
               required
             />
             <button type="submit" className="register-button">Register</button>

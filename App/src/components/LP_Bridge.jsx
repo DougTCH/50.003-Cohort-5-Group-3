@@ -1,12 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import { getUserData } from '../../utils/userdata';
+import './LP_Bridge.css';
+import { fetchLoyaltyPrograms } from '../../utils/api.jsx'
 
 const Bridge = ({ options, customStyles }) => {
+  const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [inputValue1, setInputValue1] = useState('');
-  const [inputValue2, setInputValue2] = useState('');
+  const [inputValue1, setInputValue1] = useState(''); // input membership_id
+  const [inputValue2, setInputValue2] = useState(''); // input amount to transfer
+  const [inputError, setInputError] = useState('');
   const [inputState, setInputState] = useState('initial');
   const [placeholder, setPlaceholder] = useState("Select a participating merchant");
+  const [regexPattern, setRegexPattern] = useState(null);
+
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    points: 0,
+  });
+
+  useEffect(() => {
+    const data = getUserData();
+    setUserData(data);
+  }, []);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      const programs = await fetchLoyaltyPrograms();
+      setLoyaltyPrograms(programs);
+    };
+    fetchPrograms();
+  }, []);
 
   const handleMenuOpen = () => {
     setPlaceholder("Search by name");
@@ -21,6 +46,15 @@ const Bridge = ({ options, customStyles }) => {
     setInputState('initial');
     setInputValue1('');
     setInputValue2('');
+    setInputError('');
+    if (option) {
+      const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
+      if (selectedProgram && selectedProgram.pattern) {
+        setRegexPattern(new RegExp(selectedProgram.pattern));
+      } else {
+        setRegexPattern(null);
+      }
+    }
   };
 
   const handleInputChange1 = (e) => {
@@ -33,8 +67,11 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleInputSubmit = (inputId) => {
     if (inputId === 'memIdBox') {
-      if (inputValue1.trim() === '1234') {
+      if (regexPattern && regexPattern.test(inputValue1)) {
         setInputState('validated');
+        setInputError('');
+      } else {
+        setInputError('Invalid membership ID.');
       }
     } else if (inputId === 'amountBox') {
       // Handle amount submission
@@ -50,7 +87,6 @@ const Bridge = ({ options, customStyles }) => {
   useEffect(() => {
     const memIdBox = document.getElementById('memIdBox');
     const amountBox = document.getElementById('amountBox');
-
     if (memIdBox) {
       memIdBox.addEventListener('keydown', (e) => handleKeyDown(e, 'memIdBox'));
     }
@@ -68,15 +104,20 @@ const Bridge = ({ options, customStyles }) => {
   }, [inputValue1, inputValue2]);
 
   const handleMaxClick = () => {
-    setInputValue2('1000');
+    setInputValue2(userData.points.toString());
   };
+
+  const selectOptions = loyaltyPrograms.map(program => ({
+    value: program.pid,
+    label: program.name,
+  }));
 
   return (
     <section id="bridge-section" className="bridge-section">
       <div className="label"><p>Sender</p></div>
       <div className="fetch-box">
         <p className="fetch-label">Fetch</p>
-        <p className="available-points">Available: 1000 Points</p>
+        <p className="available-points">Available: {userData.points} Points</p>
       </div>
       <div className="label"><p>Receiver</p></div>
       <Select
@@ -84,7 +125,7 @@ const Bridge = ({ options, customStyles }) => {
         classNamePrefix="select"
         isClearable
         isSearchable
-        options={options}
+        options={selectOptions}
         onChange={handleChange}
         placeholder={placeholder}
         onMenuOpen={handleMenuOpen}
@@ -111,6 +152,7 @@ const Bridge = ({ options, customStyles }) => {
                 onChange={handleInputChange1}
                 onKeyDown={(e) => handleKeyDown(e, 'memIdBox')}
               />
+              {inputError && <p className="error">{inputError}</p>}
             </>
           ) : inputState === 'validated' && (
             <>

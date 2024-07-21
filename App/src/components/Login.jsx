@@ -20,12 +20,22 @@ const Login = ({ onLogin }) => {
         onLogin();
         navigate('/');
       } else {
-        const response = await axios.post('http://localhost:5000/api/login', { email, password });
-        localStorage.setItem('token', response.data.token);
+        const response = await axios.post('http://localhost:5001/api/login', { email, password });
+        const data = response.data;
+        const {user, token} = data;
+        localStorage.setItem('token', token);
+        //set session data 
+        sessionStorage.setItem('firstName', user.firstName);
+        sessionStorage.setItem('lastName', user.lastName);
+        sessionStorage.setItem('points', user.points);
+        sessionStorage.setItem('id', user.id);
+        console.log('set session data' , user.id);
 
         //login on transfer connect
-        /*const tcResponse = await axios.post('http://localhost:3000/auth/login', { email, password});
-        localStorage.setItem('tctoken'. tcResponse.data.token );
+        /*
+        let app_code = "FETCH" ; 
+        const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, app_code  });
+        localStorage.setItem('tctoken', tcResponse.data.token );
         */
         onLogin();
         navigate('/');

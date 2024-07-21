@@ -1,0 +1,56 @@
+:root{
+    --colour-darkblue: #0f1537;
+}
+
+.transaction-table-container {
+    width: 80%;
+    margin: 20px auto;
+
+    padding: 10px;
+    
+    border-radius: 5px;
+  }
+  
+  .transaction-table {
+    border: 4px solid var(--colour-darkblue);
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .transaction-table th,
+  .transaction-table td {
+    padding: 20px;
+    text-align: left;
+    
+    border-bottom: 3px solid var(--colour-darkblue);
+  }
+  
+  
+  
+  .transaction-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .pagination {
+    text-align: center;
+  }
+  
+  .pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .pagination button.active {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+  }
+  
+  .pagination button:hover:not(.active) {
+    background-color: #ddd;
+  }
+  
