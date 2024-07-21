@@ -29,6 +29,7 @@ function Home() {
         <h1>Home</h1>
         <p>Welcome to the Home page, {userData.firstName} {userData.lastName}.</p>
         <p>You have, {userData.points} points.</p>
+        <p>Membership Id is {userData.user_id}. </p>
       </div>
     </div>
   );

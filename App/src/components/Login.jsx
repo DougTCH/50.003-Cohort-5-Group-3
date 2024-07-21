@@ -28,7 +28,8 @@ const Login = ({ onLogin }) => {
         sessionStorage.setItem('firstName', user.firstName);
         sessionStorage.setItem('lastName', user.lastName);
         sessionStorage.setItem('points', user.points);
-        //console.log('set session data' , user.firstName);
+        sessionStorage.setItem('id', user.id);
+        console.log('set session data' , user.id);
 
         //login on transfer connect
         /*
