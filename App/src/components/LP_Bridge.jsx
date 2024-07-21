@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import {getUserData} from '../../utils/userdata';
+import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import axios from 'axios';
+import { fetchLoyaltyPrograms } from '../../utils/api.jsx'
 
 const Bridge = ({ options, customStyles }) => {
+  const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [inputValue1, setInputValue1] = useState(''); // input membership_id
   const [inputValue2, setInputValue2] = useState(''); // input amount to transfer
@@ -12,7 +13,6 @@ const Bridge = ({ options, customStyles }) => {
   const [inputState, setInputState] = useState('initial');
   const [placeholder, setPlaceholder] = useState("Select a participating merchant");
   const [regexPattern, setRegexPattern] = useState(null);
-
 
   const [userData, setUserData] = useState({
     firstName: '',
@@ -24,24 +24,15 @@ const Bridge = ({ options, customStyles }) => {
     const data = getUserData();
     setUserData(data);
   }, []);
-// note might need to run on every render, remove [] 
 
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      const programs = await fetchLoyaltyPrograms();
+      setLoyaltyPrograms(programs);
+    };
+    fetchPrograms();
+  }, []);
 
-const fetchRegexPattern = async (pid) => {
-  try {
-    const response = await axios.get('https://api.example.com/loyalty-programs'); // Add the correct API URL here
-    const loyalty_programs = response.data; 
-    const program = loyalty_programs.find(prog => prog.pid === pid);
-    if (program && program.pattern){
-      setRegexPattern(new RegExp(program.pattern));
-    } else {
-      setRegexPattern(null);
-    }
-  } catch (error) {
-    console.error('Error fetching regex pattern: ', error);
-  }
-  };
-  
   const handleMenuOpen = () => {
     setPlaceholder("Search by name");
   };
@@ -57,18 +48,17 @@ const fetchRegexPattern = async (pid) => {
     setInputValue2('');
     setInputError('');
     if (option) {
-      fetchRegexPattern(option.value);
+      const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
+      if (selectedProgram && selectedProgram.pattern) {
+        setRegexPattern(new RegExp(selectedProgram.pattern));
+      } else {
+        setRegexPattern(null);
+      }
     }
   };
 
   const handleInputChange1 = (e) => {
-    const value = e.target.value;
-    if (regexPattern && (regexPattern.test(value) || value === '')) {
-      setInputValue1(value);
-      setInputError('');
-    } else {
-      setInputError('Invalid input.');
-    }
+    setInputValue1(e.target.value);
   };
 
   const handleInputChange2 = (e) => {
@@ -77,9 +67,12 @@ const fetchRegexPattern = async (pid) => {
 
   const handleInputSubmit = (inputId) => {
     if (inputId === 'memIdBox') {
-      //if (inputValue1.trim() === 'ABC1234') {
+      if (regexPattern && regexPattern.test(inputValue1)) {
         setInputState('validated');
-      // }
+        setInputError('');
+      } else {
+        setInputError('Invalid membership ID.');
+      }
     } else if (inputId === 'amountBox') {
       // Handle amount submission
     }
@@ -114,6 +107,11 @@ const fetchRegexPattern = async (pid) => {
     setInputValue2(userData.points.toString());
   };
 
+  const selectOptions = loyaltyPrograms.map(program => ({
+    value: program.pid,
+    label: program.name,
+  }));
+
   return (
     <section id="bridge-section" className="bridge-section">
       <div className="label"><p>Sender</p></div>
@@ -127,7 +125,7 @@ const fetchRegexPattern = async (pid) => {
         classNamePrefix="select"
         isClearable
         isSearchable
-        options={options}
+        options={selectOptions}
         onChange={handleChange}
         placeholder={placeholder}
         onMenuOpen={handleMenuOpen}
@@ -168,7 +166,6 @@ const fetchRegexPattern = async (pid) => {
                   value={inputValue2}
                   onChange={handleInputChange2}
                   onKeyDown={(e) => handleKeyDown(e, 'amountBox')}
-                  
                 />
                 <p className="fetch-points">FETCH Points</p>
                 <button type="button" id="Max" onClick={handleMaxClick}>Max</button>

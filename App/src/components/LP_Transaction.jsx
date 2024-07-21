@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { fetchTransactions } from '../../utils/api'; // Import the fetchTransactions function
 import './LP_Transaction.css';
 
 const Transaction = () => {
-  const hardcodedTransactions = [
-    { date: '14/07/2024', transactionId: '4903481991', receiver: 'Royal Air', amount: '-100.00', status: 'Pending' },
-    { date: '14/07/2024', transactionId: '3594090220', receiver: 'Royal Air', amount: '-0.10', status: 'Pending' },
-    { date: '12/07/2024', transactionId: '8394875220', receiver: 'noo', amount: '-10.00', status: 'Finalised' },
-    { date: '10/01/2024', transactionId: '9040890202', receiver: 'Royal Air', amount: '-99.00', status: 'Finalised' },
-    { date: '09/01/2024', transactionId: '4903481992', receiver: 'Royal Air', amount: '-50.00', status: 'Pending' },
-    { date: '08/01/2024', transactionId: '3594090221', receiver: 'Royal Air', amount: '-25.10', status: 'Pending' },
-    { date: '07/01/2023', transactionId: '8394875221', receiver: 'Yes', amount: '-30.00', status: 'Finalised' },
-    { date: '06/01/2024', transactionId: '9040890203', receiver: 'Royal Air', amount: '-75.00', status: 'Finalised' },
-    // Add more transactions as needed
-  ];
-  const[page , setPage] = useState(1);
+  const [transactions, setTransactions] = useState([]);
+
+  // Call the API to get the transactions
+  useEffect(() => {
+    const fetchAndSetTransactions = async () => {
+      const transactions = await fetchTransactions();
+      setTransactions(transactions);
+    };
+    fetchAndSetTransactions();
+  }, []);
+
+  const [page, setPage] = useState(1);
   const limit = 4; // number of transactions per page
-  const total = hardcodedTransactions.length;
+  const total = transactions.length;
+
   const parseDate = (dateStr) => {
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day);
   };
 
-  const sortedTransactions = [...hardcodedTransactions].sort(
+  const sortedTransactions = [...transactions].sort(
     (a, b) => parseDate(b.date) - parseDate(a.date)
   );
 
@@ -30,15 +31,12 @@ const Transaction = () => {
   const endIndex = startIndex + limit;
   const currentTransactions = sortedTransactions.slice(startIndex, endIndex);
 
-
   const handlePageChange = (newPage) => {
     setPage(newPage);
   };
 
   const totalPages = Math.ceil(total / limit);
 
-
-  
   return (
     <div className="transaction-table-container">
       <table className="transaction-table">
@@ -76,5 +74,6 @@ const Transaction = () => {
       </div>
     </div>
   );
-}
+};
+
 export default Transaction;
