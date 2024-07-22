@@ -131,6 +131,11 @@ const Bridge = ({ options, customStyles }) => {
       <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
     </div>
   );
+  const handleConfirmTransaction = () => {
+    // for now set session data of points to new points
+    sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
+  }
+
 
 
   return (
@@ -208,7 +213,7 @@ const Bridge = ({ options, customStyles }) => {
                 <p>Account Balance: {userData.points - (parseInt(inputValue2, 10) || 0)} FETCH Points</p>
               </div>
             </Collapsible>
-            <button type="button" className="confirm-transaction-button">Confirm Transaction</button>
+            <button type="button" className="confirm-transaction-button" onClick= {handleConfirmTransaction}>Confirm Transaction</button>
             <p>All transfers are final. </p>
             </>
             
