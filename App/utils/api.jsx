@@ -41,7 +41,7 @@ const fallbackLoyaltyPrograms = [
 ];
 
 const hardcodedTransactions = [
-  { date: '14/07/2024', transactionId: '4903481991', receiver: 'Royal Air', amount: '-100.00', status: 'Pending' },
+  { date: '22/07/2024', transactionId: '4903481991', receiver: 'Fast Fruits', amount: '-900.00', status: 'Pending' },
   { date: '14/07/2024', transactionId: '3594090220', receiver: 'Royal Air', amount: '-0.10', status: 'Pending' },
   { date: '12/07/2024', transactionId: '8394875220', receiver: 'noo', amount: '-10.00', status: 'Finalised' },
   { date: '10/01/2024', transactionId: '9040890202', receiver: 'Royal Air', amount: '-99.00', status: 'Finalised' },
