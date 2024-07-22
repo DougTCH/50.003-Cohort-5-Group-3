@@ -76,9 +76,17 @@ const fetchTransactions = async (user_id) => {
   }
 };
 
+const API_URL = 'http://localhost:5001/api';
+
+const login = async (email, password) => {
+  return axios.post(`${API_URL}/login`, { email, password });
+};
+
+const register = async (email, password, firstName, lastName) => {
+  return axios.post(`${API_URL}/register`, { email, password, firstName, lastName });
+};
 
 
 
-
-export { fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms };
+export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms };
 
