@@ -1,6 +1,8 @@
 // api.jsx
 import axios from 'axios';
 
+
+
 const fallbackLoyaltyPrograms = [
   {
     "pid": "BEST_MOVERS",
@@ -60,9 +62,12 @@ const fetchLoyaltyPrograms = async () => {
   }
 };
 
-const fetchTransactions = async () => {
+const fetchTransactions = async (user_id) => {
   try{
-    const response = await axios.get('https://api.example.com/transactions');
+    //fetch transactions via user_id  
+    const response = await axios.get('https://api.example.com/transactions', //same add correct api url here
+      {params: user_id}
+    );
     return response.data;
   }
     catch(error){

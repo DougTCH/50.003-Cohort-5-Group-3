@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTransactions } from '../../utils/api'; // Import the fetchTransactions function
 import './LP_Transaction.css';
+import { getUserData } from '../../utils/userdata';
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    points: 0,
+  })
+  useEffect(() => {
+    const data = getUserData();
+    setUserData(data);
+  }, []);
 
   // Call the API to get the transactions
   useEffect(() => {
     const fetchAndSetTransactions = async () => {
-      const transactions = await fetchTransactions();
+      const transactions = await fetchTransactions(userData.user_id);
       setTransactions(transactions);
     };
     fetchAndSetTransactions();
