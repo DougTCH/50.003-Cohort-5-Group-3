@@ -1,7 +1,7 @@
 /* TRANSFER BREAKDOWN */
 
 .Collapsible {
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     border-radius: 0px;
     margin-top: 10px;
     overflow: hidden;
@@ -19,8 +19,9 @@
 
   .collapsible-trigger .arrow {
     width: 25px; /* Adjust the width as needed */
-    height: 25px; /* Adjust the height as needed */
+    height: 9px; /* Adjust the height as needed */
     transition: transform 0.3s ease;
+    margin-left: 5px;
   }
 
   .collapsible-trigger .arrow.open {

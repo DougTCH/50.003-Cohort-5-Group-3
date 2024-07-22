@@ -125,7 +125,9 @@ const Bridge = ({ options, customStyles }) => {
 
   const triggerElement = (
     <div className="collapsible-trigger">
-      Transfer Breakdown
+      Transfer Breakdown   
+
+      
       <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
     </div>
   );
