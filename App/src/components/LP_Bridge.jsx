@@ -134,6 +134,10 @@ const Bridge = ({ options, customStyles }) => {
   const handleConfirmTransaction = () => {
     // for now set session data of points to new points
     sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
+
+    // Call the API to make the transaction
+    //notify user transcation is "successful"
+    alert("Transaction Successful");
   }
 
 
@@ -209,7 +213,7 @@ const Bridge = ({ options, customStyles }) => {
               onClosing={() => setIsOpen(false)}>
               <div className="transaction-details">
                 <p>From: FETCH BANK (-{inputValue2} FETCH)</p>
-                <p>To: {selectedOption ? selectOptions.label : ''} (+{inputValue2} FRUITS)</p>
+                <p>To: {selectedOption ? selectOptions.label : ''} (+{inputValue2} ROYAL)</p>
                 <p>Account Balance: {userData.points - (parseInt(inputValue2, 10) || 0)} FETCH Points</p>
               </div>
             </Collapsible>

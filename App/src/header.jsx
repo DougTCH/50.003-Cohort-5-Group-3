@@ -11,8 +11,9 @@ function Header({ onLogout}) {
     <header>
       <div className="Heading">
         <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
-        
+      
         <div className="Header_Buttons">
+          <button onClick={() => alert("NOTIFICATION")} className="NOTIFICATION">Notification</button> 
           <button onClick={() => alert("PROFILE")} className="Profile">Profile</button>
           <button onClick= {onLogout} className="Logout">Logout</button>
         </div>
