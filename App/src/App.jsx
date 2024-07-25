@@ -10,6 +10,8 @@ import Apply from './components/empty/Apply';
 import LoyaltyPoints from './components/LoyaltyPoints';
 import Login from './components/Login';
 import Register from './components/Register';
+import Notifications from './components/Notifications';
+import Profile from './components/Profile';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -66,6 +68,8 @@ const AuthenticatedRoutes = () => {
       <Route path="/cards" element={<Cards />} />
       <Route path="/apply" element={<Apply />} />
       <Route path="/loyaltypoints" element={<LoyaltyPoints />} />
+      <Route path="/notifications" element={<Notifications />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="*" element={<Navigate to={lastPath} />} />
     </Routes>
   );

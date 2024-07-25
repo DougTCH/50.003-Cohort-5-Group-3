@@ -19,14 +19,13 @@
     align-items: center;
     height: 100vh;
     margin: 0;
+    position: relative;
 }
 
 .login-page .logo{
     position: absolute;
     top: 0;
     left: 0;
-
-
 }
 
 .login-page .container {
@@ -35,6 +34,14 @@
     align-items: center;
     flex-direction: column;
     position: relative;
+}
+
+.dog-login {
+    position: absolute;
+    right: calc(50% + 3px);
+    height: 190px;
+    transform: translateX(-100%);
+    bottom: calc(10vh - 182px);
 }
 
 .login-page .login-box {

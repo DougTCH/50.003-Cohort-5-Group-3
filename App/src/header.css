@@ -2,18 +2,17 @@
 * {
     margin: 0;
     padding: 0;
-    
 }
-
 
 .Heading {
     display: flex;
     flex-direction: row;
-    align-items: center; /* Ensures items are centered vertically */
+    align-items: center;
 }
 
 .logo {
-    height: 5em;
+    height: 3em;
+    margin-left: 1em;
     padding: 1em;
 }
 
@@ -21,7 +20,7 @@
     font-size: 1.5em;
     font-weight: 700;
     margin-bottom: 0px;
-    margin-right: 1em; /* Adds some space between BankName and BankName2 */
+    margin-right: 2em;
 }
 
 .BankName2 {
@@ -33,8 +32,9 @@
 
 .Header_Buttons{
     display: flex;
+    align-items: center;
     color: white; 
-    gap:10px;
+    gap: 16px;
     border-radius: 5px;
     padding: 0.5em 1em;
     margin-right: 1em;
@@ -42,30 +42,50 @@
     margin-left: auto;
 
 }
-.Logout{
-    background-color: #df9010;
+.Logout, .Profile {
+    background-color: #d95436;
     color: white;
     border: none;
     font-size: 1em;
     font-weight: 700;
-    width: 100px;
     cursor: pointer;
-    border-radius: 25px;
+    width: 120px;
+    height: 3em;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 10px;
 }  
-.Profile{
-    background-color: #db1717;
-    color: white;
-    border: none;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100px;
-    border-radius: 25px;
 
+.Logout {
+    background-color: #df9010
+}
+
+.Profile_Icon, .Logout_Icon {
+    height: 1.4em;
+    width: auto;
+    margin-right: 0.5em;
+}
+
+.Profile_Icon {
+    height: 1.3em;
+    width: auto;
+}
+
+.Notification_Button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.Notification_Icon {
+    height: 2.8em;
 }
 
 .nav {
-    background-color:rgb(236, 88, 88);
+    background-color:#d95436;
     display: flex; 
     gap: 5vw;
     padding: 1em;
@@ -73,8 +93,15 @@
 }
 
 a{
-    color:rgb(0, 0, 0);
+    color: white;
+    font-weight: bold;
     text-decoration:none ;
     margin : auto;
     
+}
+
+sup {
+    font-size: 0.75em;
+    vertical-align: super;
+    margin-left: 0.3em;
 }
