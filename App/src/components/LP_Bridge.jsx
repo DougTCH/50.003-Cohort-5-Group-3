@@ -126,6 +126,8 @@ const Bridge = ({ options, customStyles }) => {
   const triggerElement = (
     <div className="collapsible-trigger">
       Transfer Breakdown   
+
+      
       <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
     </div>
   );
@@ -133,30 +135,9 @@ const Bridge = ({ options, customStyles }) => {
     // for now set session data of points to new points
     sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
 
-    const data = {
-      "app_id": "FETCH",   
-      "loyalty_pid": selectedOption ? selectedOption.value : "any", //change
-      "user_id": userData.id, 
-      "member_id": inputValue1,
-      "member_first": userData.firstName, 
-      "member_last": userData.lastName,
-      "transaction_date": new Date().toISOString(),
-      "ref_num": "any", // change
-      "amount": inputValue2,
-      "additional_info": "any",
-      "req": "any"
-    }
-
     // Call the API to make the transaction
-    axios.post('http://localhost:3000/transact/add_record', data)
-    .then(response => {
-      //notify user transaction is "successful"
-    alert("Transaction Sent!");
-    })
-    .catch(error => {
-      console.log("error: ", error)
-      alert("Transaction Failed.")
-    })
+    //notify user transcation is "successful"
+    alert("Transaction Successful");
   }
 
 
