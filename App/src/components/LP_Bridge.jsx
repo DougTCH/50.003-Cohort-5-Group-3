@@ -4,7 +4,7 @@ import Collapsible from 'react-collapsible';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
 import { fetchLoyaltyPrograms } from '../../utils/api.jsx';
-import arrowImage from '../assets/DropdownArrowBlue.svg';
+import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
