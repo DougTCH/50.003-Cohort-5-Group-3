@@ -1,11 +1,27 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { Link, useNavigate} from 'react-router-dom';
 import './header.css';
-import viteLogo from '/vite.svg';
 import bankLogo from './assets/Banklogo.svg'
+import bellIcon from './assets/UI_ASSETS/UI_RED_BELL.png'
+import bellRingIcon from './assets/UI_ASSETS/UI_RED_BELL_RING.png'
 
 
 function Header({ onLogout}) {
+
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const navigate = useNavigate();
+
+  
+  useEffect(() => {
+    // Placeholder first
+    const fetchNotificationsStatus = () => {
+      // Placeholder first
+      const unreadNotifications = false;
+      setHasUnreadNotifications(unreadNotifications);
+    };
+    fetchNotificationsStatus();
+  }, []);
+  
 
   return (
     <header>
@@ -13,7 +29,17 @@ function Header({ onLogout}) {
         <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
       
         <div className="Header_Buttons">
-          <button onClick={() => alert("NOTIFICATION")} className="NOTIFICATION">Notification</button> 
+          <button 
+            onClick={() => navigate('/notifications')}
+            className="Notification_Button"
+            aria-label="Notification"
+          >
+            <img
+              src={hasUnreadNotifications ? bellRingIcon : bellIcon}
+              alt="Notification Bell Icon"
+              className="Notification_Icon"
+            />
+          </button>
           <button onClick={() => alert("PROFILE")} className="Profile">Profile</button>
           <button onClick= {onLogout} className="Logout">Logout</button>
         </div>

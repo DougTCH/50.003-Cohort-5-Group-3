@@ -64,6 +64,17 @@
 
 }
 
+.Notification_Button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.Notification_Icon {
+    height: 3em; /* Adjust the size as needed */
+}
+
 .nav {
     background-color:rgb(236, 88, 88);
     display: flex; 
