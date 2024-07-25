@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #1a1e43;
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <g id="Design">
+    <g>
+      <path class="cls-1" d="M50,100C22.43,100,0,77.57,0,50S22.43,0,50,0s50,22.43,50,50-22.43,50-50,50ZM50,5.47C25.45,5.47,5.47,25.45,5.47,50s19.98,44.53,44.53,44.53,44.53-19.98,44.53-44.53S74.55,5.47,50,5.47Z"/>
+      <polygon class="cls-2" points="50 14.42 74.49 57.41 47.88 53.91 50 85.58 25.51 42.1 51.97 44.24 50 14.42"/>
+    </g>
+  </g>
+</svg>
