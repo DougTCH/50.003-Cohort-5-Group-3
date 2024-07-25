@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './login.css';
-import bankLogo from '../assets/Banklogo.svg'
+import bankLogo from '../assets/FETCH_LOGOS/FETCH_LOGO_HORIZONTAL.svg'
+import dogLogin from '../assets/GRAPHIC_ASSETS/GRAPHIC_DOG_LOGIN.svg'
 
 
 const Login = ({ onLogin }) => {
@@ -50,6 +51,7 @@ const Login = ({ onLogin }) => {
     <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
 
       <div className="container">
+      <img className="dog-login" src={dogLogin} alt="Dog Login" />
         <div className="login-box">
           <h2>Welcome Back!</h2>
           <form onSubmit={handleSubmit}>

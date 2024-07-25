@@ -1,11 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { Link, useNavigate} from 'react-router-dom';
 import './header.css';
-import viteLogo from '/vite.svg';
-import bankLogo from './assets/Banklogo.svg'
+import bankLogo from './assets/FETCH_LOGOS/FETCH_LOGO_HORIZONTAL.svg'
+import bellIcon from './assets/UI_ASSETS/UI_RED_BELL.svg'
+import bellRingIcon from './assets/UI_ASSETS/UI_RED_BELL_RING.svg'
+import profileIcon from './assets/UI_ASSETS/UI_WHITE_PROFILE_BUTTON.svg'
+import loginIcon from './assets/UI_ASSETS/UI_WHITE_LOGIN_BUTTON.svg'
+import logoutIcon from './assets/UI_ASSETS/UI_WHITE_LOGOUT_BUTTON.svg'
+
 
 
 function Header({ onLogout}) {
+
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const navigate = useNavigate();
+
+  
+  useEffect(() => {
+    // Placeholder first
+    const fetchNotificationsStatus = () => {
+      // Placeholder first
+      const unreadNotifications = false;
+      setHasUnreadNotifications(unreadNotifications);
+    };
+    fetchNotificationsStatus();
+  }, []);
+  
 
   return (
     <header>
@@ -13,9 +33,27 @@ function Header({ onLogout}) {
         <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
       
         <div className="Header_Buttons">
-          <button onClick={() => alert("NOTIFICATION")} className="NOTIFICATION">Notification</button> 
-          <button onClick={() => alert("PROFILE")} className="Profile">Profile</button>
-          <button onClick= {onLogout} className="Logout">Logout</button>
+          <button 
+            onClick={() => navigate('/notifications')}
+            className="Notification_Button"
+            aria-label="Notification"
+          >
+            <img
+              src={hasUnreadNotifications ? bellRingIcon : bellIcon}
+              alt="Notification Bell Icon"
+              className="Notification_Icon"
+            />
+          </button>
+          <button 
+            onClick={() => navigate('/profile')}
+            className="Profile"
+            aria-label="Profile"
+          >
+            <img src={profileIcon} alt="Profile Icon" className="Profile_Icon" />
+            </button>
+          <button onClick= {onLogout} className="Logout">
+            <img src={logoutIcon} alt="Logout Icon" className="Logout_Icon" />
+          </button>
         </div>
       </div>
       <nav className="nav">
