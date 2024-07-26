@@ -1,0 +1,41 @@
+/* splash.css */
+.splash-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffffff; /* Adjust as needed */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100; /* Ensure it is above other content */
+    animation: floatUpFadeOut 0.6s 1s forwards; /* Adjust duration as needed */
+  }
+  
+  .splash-logo {
+    width: 250px; /* Adjust as needed */
+    margin-bottom: 80px;
+  }
+  
+  .splash-text {
+    font-size: 30px;
+    color: #D95436; /* Adjust as needed */
+    letter-spacing: 10px; /* Adjust as needed for kerning */
+  }
+  
+  @keyframes floatUpFadeOut {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  }
+  

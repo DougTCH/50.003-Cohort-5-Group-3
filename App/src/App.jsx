@@ -12,17 +12,18 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Notifications from './components/Notifications';
 import Profile from './components/Profile';
+import Splash from './components/Splash';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
     }
-   
+    setTimeout(() => setShowSplash(false), 3000);
   }, []);
 
   const handleLogin = () => {
@@ -33,20 +34,55 @@ const App = () => {
     localStorage.removeItem('token');
     sessionStorage.clear();
     setIsAuthenticated(false);
+    setShowSplash(true);
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
   };
 
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
 
   return (
     <Router>
+      <Main
+        showSplash={showSplash}
+        isAuthenticated={isAuthenticated}
+        onSplashFinish={handleSplashFinish}
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+      />
+    </Router>
+  );
+};
+
+const Main = ({ showSplash, isAuthenticated, onSplashFinish, onLogin, onLogout }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated && !showSplash) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, showSplash, navigate]);
+
+  useEffect(() => {
+    sessionStorage.setItem('lastPath', location.pathname);
+  }, [location]);
+
+  return (
+    <>
+      {showSplash && <Splash onFinish={onSplashFinish} />}
       {isAuthenticated ? (
         <>
-          <Header onLogout={handleLogout} />
+          <Header onLogout={onLogout} />
           <AuthenticatedRoutes />
         </>
       ) : (
-        <UnauthenticatedRoutes onLogin={handleLogin} />
+        <UnauthenticatedRoutes onLogin={onLogin} />
       )}
-    </Router>
+    </>
   );
 };
 
