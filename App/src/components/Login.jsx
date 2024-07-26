@@ -41,10 +41,11 @@ const Login = ({ onLogin }) => {
   
         // Transfer Connect login
         try {
-          let app_code = "FETCH";
-          const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, app_code });
-          localStorage.setItem('tctoken', tcResponse.data.token);
+          let appcode = "FETCH";
+          const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, appcode });
+          sessionStorage.setItem('tctoken', tcResponse.data.token);
           console.log("Login on Transfer Connect works");
+          console.log("tctoken is ", sessionStorage.getItem('tctoken'))
         } catch (error) {
           console.error('Transfer Connect login error:', error);
           setMessage('Transfer Connect login failed');

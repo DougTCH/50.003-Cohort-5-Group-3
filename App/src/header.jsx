@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './header.css';
-import viteLogo from '/vite.svg';
 import bankLogo from './assets/Banklogo.svg'
 
 
