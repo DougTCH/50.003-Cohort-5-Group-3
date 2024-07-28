@@ -34,7 +34,7 @@
     display: flex;
     align-items: center;
     color: white; 
-    gap: 16px;
+    gap: 20px;
     border-radius: 5px;
     padding: 0.5em 1em;
     margin-right: 1em;
@@ -49,8 +49,8 @@
     font-size: 1em;
     font-weight: 700;
     cursor: pointer;
-    width: 120px;
-    height: 3em;
+    width: 130px;
+    height: 3.5em;
     border-radius: 18px;
     display: flex;
     align-items: center;
@@ -70,7 +70,10 @@
 
 .Profile_Icon {
     height: 1.3em;
-    width: auto;
+}
+
+.Logout_Icon {
+    height: 1.5em;
 }
 
 .Notification_Button {
@@ -87,9 +90,8 @@
 .nav {
     background-color:#d95436;
     display: flex; 
-    gap: 5vw;
+    gap: 0vw;
     padding: 1em;
-  
 }
 
 a{
@@ -97,7 +99,6 @@ a{
     font-weight: bold;
     text-decoration:none ;
     margin : auto;
-    
 }
 
 sup {

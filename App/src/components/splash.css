@@ -15,14 +15,16 @@
   }
   
   .splash-logo {
-    width: 250px; /* Adjust as needed */
+    width: 300px; /* Adjust as needed */
+    margin-top: 50px;
     margin-bottom: 80px;
   }
   
   .splash-text {
-    font-size: 30px;
+    font-size: 38px;
     color: #D95436; /* Adjust as needed */
-    letter-spacing: 10px; /* Adjust as needed for kerning */
+    margin-top: 10px;
+    letter-spacing: 20px; /* Adjust as needed for kerning */
   }
   
   @keyframes floatUpFadeOut {

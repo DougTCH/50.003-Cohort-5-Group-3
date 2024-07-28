@@ -1,0 +1,30 @@
+[
+  {
+      "name": "HOMEPAGE_AD_1",
+      "full_picture_path": "assets/HOMEPAGE_ADS_ASSETS/HOMEPAGE_AD_1.png",
+      "header": "Craving a Holiday?",
+      "body_text": "Forget about the fuss of getting there: we are sure you'll like our one-click vacation packages!\n\nFrom the tropical getaways of Bali to the snowy alps of Switzerland, you're sure to find an adventure that interests you.\n\nLimited slots available! What are you waiting for?",
+      "cta_button": "Bring Me There!"
+  },
+  {
+      "name": "HOMEPAGE_AD_2",
+      "full_picture_path": "assets/HOMEPAGE_ADS_ASSETS/HOMEPAGE_AD_2.png",
+      "header": "No More Worries.",
+      "body_text": "Is your current car insurance giving you a headache? Say no to complicated plans and check out our Supreme Coverage Plan!\n\nInsurance that is transparent, cost-effective, and easy to understand: Say bye-bye to all the stress!",
+      "cta_button": "Register Now"
+  },
+  {
+      "name": "HOMEPAGE_AD_3",
+      "full_picture_path": "assets/HOMEPAGE_ADS_ASSETS/HOMEPAGE_AD_3.png",
+      "header": "Celebrate Christmas with Royal Air!",
+      "body_text": "Fly like a royal this Christmas! We are delighted to partner with Royal Air to giveaway discount vouchers worth up to $500 to 10 lucky winners!\n\nSimply follow a few easy steps and stand a chance to win; terms and conditions apply. Sign ups close on Nov 15.",
+      "cta_button": "Sign Up Now"
+  },
+  {
+      "name": "HOMEPAGE_AD_4",
+      "full_picture_path": "assets/HOMEPAGE_ADS_ASSETS/HOMEPAGE_AD_4.png",
+      "header": "Gift for That Special Someone This Season.",
+      "body_text": "Surprise a special someone this season with our limited edition credit card, jam packed with seasonal promotions and perks!\n\nBy giving someone this card, you can stand a chance to win an all-inclusive travel package! What are you waiting for? Spread the joy!",
+      "cta_button": "Find Out More!"
+  }
+]
