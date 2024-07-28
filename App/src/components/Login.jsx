@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './login.css';
-import bankLogo from '../assets/Banklogo.svg'
+import bankLogo from '../assets/FETCH_LOGOS/FETCH_LOGO_HORIZONTAL.svg'
+import dogLogin from '../assets/GRAPHIC_ASSETS/GRAPHIC_DOG_LOGIN.svg'
 
 
 const Login = ({ onLogin }) => {
@@ -64,35 +65,33 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="login-page">
-    <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
-
-      <div className="container">
-        <div className="login-box">
-          <h2>Welcome Back!</h2>
-          <form onSubmit={handleSubmit}>
-            <label>Login</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Username"
-              required
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-            />
-            <button type="submit" className="login-button">Let's Go</button>
-            <p>{message}</p>
-            <p>New Here? <Link to="/register">Register</Link></p>
-            
-          </form>
-        
+        <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
+        <img className="dog-login" src={dogLogin} alt="Dog Login" />
+        <div className="container">
+            <div className="login-box">
+                <h2>Welcome Back!</h2>
+                <form onSubmit={handleSubmit}>
+                    <label>Login</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Username"
+                        required
+                    />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        required
+                    />
+                    <button type="submit" className="login-button">Let's Go</button>
+                    <p>{message}</p>
+                    <p>New Here? <Link to="/register">Register</Link></p>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
   );
 };

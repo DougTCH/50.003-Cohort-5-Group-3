@@ -1,0 +1,92 @@
+.home-container {
+    display: flex;
+    height: 450px; /* Set the height to 450px */
+    overflow: hidden;
+    position: relative;
+    align-items: center; /* Center align items vertically */
+}
+
+.image-container {
+    flex: 1;
+    position: relative;
+    height: 100%; /* Ensure it takes the full height of the container */
+}
+
+.home-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.black-gradient-overlay {
+    position: absolute;
+    top: 0;
+    right: 0; /* Anchor to the right side */
+    width: 80%; /* Stretch to the center of the screen */
+    height: 100%;
+    background: url('../assets/HOMEPAGE_ADS_ASSETS/HOME_BLACK_GRADIENT.svg');
+    background-size: cover;
+    pointer-events: none; /* To allow clicks through the overlay */
+    z-index: 1; /* Ensure it stays behind other content */
+}
+
+.nav-buttons {
+    position: absolute;
+    bottom: 10px; /* Position at the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust to truly center */
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    z-index: 3; /* Ensure buttons are above overlay and text */
+}
+
+.nav-button {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 4; /* Ensure buttons are above overlay and text */
+}
+
+.text-container {
+    position: absolute;
+    right: 30px;
+    width: 30%; /* Adjust as needed */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    color: white;
+    text-align: left; /* Align text to the right */
+    z-index: 2; /* Ensure text is above gradient */
+}
+
+.text-container h1 {
+    margin-bottom: 20px; /* Adjust the spacing between header and body text */
+    font-size: 2.2em;
+}
+
+.cta-button {
+    background: #D95436;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    align-self: flex-start; /* Align button to the right */
+    margin-top: 30px;
+    border-radius: 30px;
+}
+
+.user-info-container {
+    padding: 20px;
+    margin-left: 50px;
+    color: #333;
+    text-align: left;
+    background-color: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    width: 100%; /* Ensure it takes the full width */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
