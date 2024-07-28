@@ -54,7 +54,11 @@ const hardcodedTransactions = [
 
 const fetchLoyaltyPrograms = async () => {
   try {
-    const response = await axios.get('https://api.example.com/loyalty-programs'); // Add the correct API URL here
+    const response = await axios.get('http://localhost:3000/info/get-loyalty-programs',
+      {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+        }, // Add the correct API URL here
+    )
     return response.data;
   } catch (error) {
     console.error('Error fetching loyalty programs, using fallback data: ', error);
@@ -64,13 +68,19 @@ const fetchLoyaltyPrograms = async () => {
 
 const fetchTransactions = async (user_id) => {
   try{
-    //fetch transactions via user_id  
-    const response = await axios.get('https://api.example.com/transactions', //same add correct api url here
-      {params: user_id}
+    //fetch transactions via user_id 
+
+    const response = await axios.get('http://localhost:3000/transact/obtain_record/By_member_id/all', //same add correct api url here
+      {params: user_id,
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+      },
+
+    
     );
     return response.data;
   }
     catch(error){
+    console.log(sessionStorage.getItem('tctoken'));
     console.error('Error fetching transactions, using hardcoded data: ', error);
     return hardcodedTransactions;
   }

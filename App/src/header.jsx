@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import './header.css';
-import bankLogo from './assets/FETCH_LOGOS/FETCH_LOGO_HORIZONTAL.svg'
-import bellIcon from './assets/UI_ASSETS/UI_RED_BELL.svg'
-import bellRingIcon from './assets/UI_ASSETS/UI_RED_BELL_RING.svg'
-import profileIcon from './assets/UI_ASSETS/UI_WHITE_PROFILE_BUTTON.svg'
-import loginIcon from './assets/UI_ASSETS/UI_WHITE_LOGIN_BUTTON.svg'
-import logoutIcon from './assets/UI_ASSETS/UI_WHITE_LOGOUT_BUTTON.svg'
+import bankLogo from './assets/FETCH_LOGOS/FETCH_LOGO_HORIZONTAL.svg';
+import bellIcon from './assets/UI_ASSETS/UI_RED_BELL.svg';
+import bellRingIcon from './assets/UI_ASSETS/UI_RED_BELL_RING.svg';
+import profileIcon from './assets/UI_ASSETS/UI_WHITE_PROFILE_BUTTON.svg';
+import loginIcon from './assets/UI_ASSETS/UI_WHITE_LOGIN_BUTTON.svg';
+import logoutIcon from './assets/UI_ASSETS/UI_WHITE_LOGOUT_BUTTON.svg';
+
 
 
 
