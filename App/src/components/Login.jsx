@@ -18,8 +18,14 @@ const Login = ({ onLogin }) => {
       //backdoor for offline testing
       if (email === 'admin@gmail.com' && password === 'admin') {
         localStorage.setItem('token', 'admin');
+        localStorage.setItem('role', 'user');
         onLogin();
         navigate('/');
+      } else if (email === 'secret@gmail.com' && password === 'secret') {
+        localStorage.setItem('token', 'admin');
+        localStorage.setItem('role', 'admin');
+        onLogin();
+        navigate('/admin/Dashboard');
       } else {
         const response = await axios.post('http://localhost:5001/api/login', { email, password });
         const data = response.data;

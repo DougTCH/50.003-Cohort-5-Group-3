@@ -13,27 +13,36 @@ import Register from './components/Register';
 import Notifications from './components/Notifications';
 import Profile from './components/Profile';
 import Splash from './components/Splash';
+import AdminDashboard from './components/admin/Dashboard';
+import AdminLoyaltyPoints from './components/admin/AdminLoyaltyPoints';
+import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [role, setRole] = useState('');
   
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role');
     if (token) {
       setIsAuthenticated(true);
+      setRole(userRole);
     }
     setTimeout(() => setShowSplash(false), 3000);
   }, []);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+    setRole(localStorage.getItem('role'));
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     sessionStorage.clear();
     setIsAuthenticated(false);
+    setRole('');
     setShowSplash(true);
     setTimeout(() => {
       setShowSplash(false);
@@ -49,6 +58,7 @@ const App = () => {
       <Main
         showSplash={showSplash}
         isAuthenticated={isAuthenticated}
+        role={role}
         onSplashFinish={handleSplashFinish}
         onLogin={handleLogin}
         onLogout={handleLogout}
@@ -57,7 +67,7 @@ const App = () => {
   );
 };
 
-const Main = ({ showSplash, isAuthenticated, onSplashFinish, onLogin, onLogout }) => {
+const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -76,17 +86,25 @@ const Main = ({ showSplash, isAuthenticated, onSplashFinish, onLogin, onLogout }
       {showSplash && <Splash onFinish={onSplashFinish} />}
       {isAuthenticated ? (
         <>
-          <Header onLogout={onLogout} />
-          <AuthenticatedRoutes />
+          <Header role={role} onLogout={onLogout} />
+          <Routes>
+            {role === 'admin' ? (
+              <Route path="*" element={<AdminRoutes isAuthenticated={isAuthenticated} role={role} />} />
+            ) : (
+              <Route path="*" element={<AuthenticatedRoutes isAuthenticated={isAuthenticated} role={role} />} />
+            )}
+          </Routes>
         </>
       ) : (
-        <UnauthenticatedRoutes onLogin={onLogin} />
+        <Routes>
+          <Route path="*" element={<UnauthenticatedRoutes onLogin={onLogin} />} />
+        </Routes>
       )}
     </>
   );
 };
 
-const AuthenticatedRoutes = () => {
+const AuthenticatedRoutes = ({ isAuthenticated, role }) => {
   const location = useLocation();
 
   useEffect(() => {
@@ -97,15 +115,33 @@ const AuthenticatedRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/accounts" element={<MyAccounts />} />
-      <Route path="/transfer" element={<Transfer />} />
-      <Route path="/pay" element={<Pay />} />
-      <Route path="/cards" element={<Cards />} />
-      <Route path="/apply" element={<Apply />} />
-      <Route path="/loyaltypoints" element={<LoyaltyPoints />} />
-      <Route path="/notifications" element={<Notifications />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/" element={<PrivateRoute element={<Home />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/accounts" element={<PrivateRoute element={<MyAccounts />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/transfer" element={<PrivateRoute element={<Transfer />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/pay" element={<PrivateRoute element={<Pay />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/cards" element={<PrivateRoute element={<Cards />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/apply" element={<PrivateRoute element={<Apply />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/loyaltypoints" element={<PrivateRoute element={<LoyaltyPoints />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
+      <Route path="/notifications" element={<PrivateRoute element={<Notifications />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} />
+      <Route path="/profile" element={<PrivateRoute element={<Profile />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} />
+      <Route path="*" element={<Navigate to={lastPath} />} />
+    </Routes>
+  );
+};
+
+const AdminRoutes = ({ isAuthenticated, role }) => { 
+  const location = useLocation();
+
+  useEffect(() => {
+    sessionStorage.setItem('lastPath', location.pathname);
+  }, [location]);
+
+  const lastPath = sessionStorage.getItem('lastPath') || '/admin/Dashboard';
+
+  return (
+    <Routes>
+      <Route path="/admin/Dashboard" element={<PrivateRoute element={<AdminDashboard />} isAuthenticated={isAuthenticated} role={role} requiredRole="admin" />} /> 
+      <Route path="/admin/loyaltypoints" element={<PrivateRoute element={<AdminLoyaltyPoints />} isAuthenticated={isAuthenticated} role={role} requiredRole="admin" />} /> 
       <Route path="*" element={<Navigate to={lastPath} />} />
     </Routes>
   );
