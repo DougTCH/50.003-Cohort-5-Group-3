@@ -3,7 +3,7 @@ import Select from 'react-select';
 import Collapsible from 'react-collapsible';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms } from '../../utils/api.jsx';
+import { fetchLoyaltyPrograms , sendTransaction} from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 
 const Bridge = ({ options, customStyles }) => {
@@ -32,6 +32,7 @@ const Bridge = ({ options, customStyles }) => {
   useEffect(() => {
     const fetchPrograms = async () => {
       const programs = await fetchLoyaltyPrograms();
+      
       setLoyaltyPrograms(programs);
     };
     fetchPrograms();
@@ -57,7 +58,8 @@ const Bridge = ({ options, customStyles }) => {
       if (selectedProgram && selectedProgram.pattern) {
         setRegexPattern(new RegExp(selectedProgram.pattern));
       } else {
-        setRegexPattern(null);
+        setRegexPattern(new RegExp('^[0-9]{6}$')); //just 6 numbers 
+        
       }
     }
   };
@@ -129,35 +131,60 @@ const Bridge = ({ options, customStyles }) => {
       <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
     </div>
   );
-  const handleConfirmTransaction = () => {
+  const handleConfirmTransaction = async () => {
     // for now set session data of points to new points
     sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
+    const formatDateToDDMMYY = (date) => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear());
+      return `${day}${month}${year}`;
+    };
+  
+    const transaction_date = formatDateToDDMMYY(new Date());
 
     const data = {
-      "app_id": "FETCH",   
-      "loyalty_pid": selectedOption ? selectedOption.value : "any", //change
-      "user_id": userData.id, 
+      "app_id": "CITY_BANK",   
+      "loyalty_pid": selectedOption ? selectedOption.value : "any",
+      "user_id": userData.user_id,
       "member_id": inputValue1,
       "member_first": userData.firstName, 
       "member_last": userData.lastName,
-      "transaction_date": new Date().toISOString(),
-      "ref_num": "any", // change
+      "transaction_date": transaction_date,
+      "ref_num": "any1", 
       "amount": inputValue2,
       "additional_info": "any",
-      "req": "any"
+    };
+    console.log('sending transaction data', data);
+  
+    try {
+      // Assuming the token is stored in sessionStorage
+      const token = sessionStorage.getItem('tctoken');
+      if (!token) {
+        throw new Error("User is not authenticated. Please log in.");
+      }
+  
+      const result = await sendTransaction(
+        data.app_id,
+        data.loyalty_pid,
+        data.user_id,
+        data.member_id,
+        data.member_first,
+        data.member_last,
+        data.transaction_date,
+        data.ref_num,
+        data.amount,
+        data.additional_info,
+      
+      );
+  
+      console.log('Transaction successful:', result);
+      // Handle successful transaction (e.g., show a success message, redirect, etc.)
+    } catch (error) {
+      console.error('Error confirming transaction:', error);
+      // Handle error (e.g., show an error message)
     }
-
-    // Call the API to make the transaction
-    axios.post('http://localhost:3000/transact/add_record', data)
-    .then(response => {
-      //notify user transaction is "successful"
-    alert("Transaction Sent!");
-    })
-    .catch(error => {
-      console.log("error: ", error)
-      alert("Transaction Failed.")
-    })
-  }
+  };
 
 
 

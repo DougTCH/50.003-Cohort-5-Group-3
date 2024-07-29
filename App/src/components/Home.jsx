@@ -103,6 +103,7 @@ function Home() {
         <p>Hello, {userData.firstName} {userData.lastName}.</p>
         <p>You have, {userData.points} points.</p>
         <p>Membership Id is {userData.user_id}.</p>
+        <p> TC token is {sessionStorage.getItem('tctoken')}</p>
       </div>
     </div>
   );  

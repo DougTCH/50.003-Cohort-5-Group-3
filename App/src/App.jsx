@@ -38,8 +38,8 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+  
+    localStorage.clear()
     sessionStorage.clear();
     setIsAuthenticated(false);
     setRole('');
