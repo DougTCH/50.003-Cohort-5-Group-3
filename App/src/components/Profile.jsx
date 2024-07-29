@@ -1,22 +1,18 @@
 import React from 'react';
 import './profile.css';
-import defaultProfilePicture from '../assets/FETCH_LOGOS/FETCH_LOGO_MAIN.svg';
+import UserDetails from './profileHelper/UserDetails';
+import TierProgress from './profileHelper/TierProgress';
+import Tasks from './profileHelper/Tasks';
 
 const Profile = () => {
   return (
     <div className="profile-container">
-      <div className="profile-header">
-        <h1>Profile</h1>
-      </div>
       <div className="profile-content">
-        <div className="profile-picture">
-          <img src={defaultProfilePicture} alt="Profile" />
+        <div className="profile-top">
+          <UserDetails />
+          <TierProgress />
         </div>
-        <div className="profile-details">
-          <h2>John Doe</h2>
-          <p>Email: john.doe@example.com</p>
-          <button className="edit-profile-button">Edit Profile</button>
-        </div>
+        <Tasks />
       </div>
     </div>
   );
