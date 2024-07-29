@@ -34,14 +34,15 @@
     align-items: center;
     flex-direction: column;
     position: relative;
+    margin-bottom: 50px;
 }
 
 .dog-login {
     position: absolute;
-    right: calc(50% + 3px);
-    height: 190px;
-    transform: translateX(-100%);
-    bottom: calc(10vh - 128px);
+    bottom: 10rem; /* Align the bottom of the dog with the top of the red bar */
+    right: 47.5%; /* Align the right side of the dog with the left side of the form */
+    transform: translateX(calc(-100% - 15px)); /* Offset to align right side of the dog to left side of form */
+    height: 220px;
 }
 
 .login-page .login-box {

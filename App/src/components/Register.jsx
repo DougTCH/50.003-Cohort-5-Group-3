@@ -21,13 +21,16 @@ const Register = () => {
       setMessage(response.data.message);
 
       //register on TC app 
-      /*
-      let app_code = "FETCH"; 
-      await axios.post('http://localhost:3000/auth/register', { username: email, password, app_code}); 
-      */
+      
+      let appcode = "FETCH"; 
+      const response_tc = await axios.post('http://localhost:3000/auth/register', { username: email, password, appcode});
+      setMessage(response_tc.data.messsage)
+      console.log("register success yay")
+      
       //nagivate to login after done 
       navigate('/login');
     } catch (error) {
+      console.log(response_tc)
       setMessage('Registration failed');
     }
   };
