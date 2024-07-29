@@ -56,9 +56,10 @@ const fetchLoyaltyPrograms = async () => {
   try {
     const response = await axios.get('http://localhost:3000/info/get-loyalty-programs',
       {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
-        }, // Add the correct API URL here
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` } //send authentication to TC 
+        }, 
     )
+    console.log(response.data); 
     return response.data;
   } catch (error) {
     console.error('Error fetching loyalty programs, using fallback data: ', error);
@@ -74,9 +75,8 @@ const fetchTransactions = async (user_id) => {
       {params: user_id,
       headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
       },
-
-    
     );
+    
     return response.data;
   }
     catch(error){
