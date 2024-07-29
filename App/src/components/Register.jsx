@@ -22,7 +22,7 @@ const Register = () => {
 
       //register on TC app 
       
-      let appcode = "FETCH"; 
+      let appcode = "CITY_BANK"; //origninal is FETCH , more test: NATIONAL_BANKING, KINGSMAN_BANK
       const response_tc = await axios.post('http://localhost:3000/auth/register', { username: email, password, appcode});
       setMessage(response_tc.data.messsage)
       console.log("register success yay")

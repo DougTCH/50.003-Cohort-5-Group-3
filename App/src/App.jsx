@@ -72,15 +72,17 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated && !showSplash) {
-      navigate('/login');
+    if (!isAuthenticated && !showSplash && location.pathname !== '/login' && location.pathname !== '/register') {
+      navigate('/login', {replace: true});
     }
-  }, [isAuthenticated, showSplash, navigate]);
+  }, [isAuthenticated, showSplash, navigate, location.pathname]);
 
   useEffect(() => {
-    sessionStorage.setItem('lastPath', location.pathname);
-  }, [location]);
-
+    if (isAuthenticated) {
+      sessionStorage.setItem('lastPath', location.pathname);
+    }
+  }, [location, isAuthenticated]);
+  
   return (
     <>
       {showSplash && <Splash onFinish={onSplashFinish} />}
