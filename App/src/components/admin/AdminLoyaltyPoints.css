@@ -1,0 +1,58 @@
+.admin-loyalty-points {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-loyalty-points h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.admin-loyalty-points table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-loyalty-points table th,
+.admin-loyalty-points table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.admin-loyalty-points table th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.admin-loyalty-points table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.admin-loyalty-points table tr:hover {
+  background-color: #ddd;
+}
+
+.admin-loyalty-points .button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.admin-loyalty-points .button-container button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-loyalty-points .button-container button:hover {
+  background-color: #45a049;
+}
