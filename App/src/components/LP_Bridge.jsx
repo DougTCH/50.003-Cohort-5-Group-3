@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import Collapsible from 'react-collapsible';
+import Modal from 'react-modal';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms , sendTransaction} from '../../utils/api.jsx';
+import { fetchLoyaltyPrograms, sendTransaction } from '../../utils/api';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
+
+Modal.setAppElement('#root'); // Accessibility setting for the modal
 
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
@@ -17,12 +20,24 @@ const Bridge = ({ options, customStyles }) => {
   const [regexPattern, setRegexPattern] = useState(null);
   const [submitTransaction, setSubmitTransaction] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
     points: 0,
   });
+
+  const generateRefNum = () => {
+    // Use current timestamp for time component
+    const timestamp = Date.now().toString();
+  
+    // Use Math.random() for a random component, converted to base 36 (0-9a-z)
+    const randomComponent = Math.random().toString(36).substring(2, 8).toUpperCase();
+  
+    // Combine both parts
+    return `${timestamp}-${randomComponent}`;
+  };
 
   useEffect(() => {
     const data = getUserData();
@@ -32,7 +47,6 @@ const Bridge = ({ options, customStyles }) => {
   useEffect(() => {
     const fetchPrograms = async () => {
       const programs = await fetchLoyaltyPrograms();
-      
       setLoyaltyPrograms(programs);
     };
     fetchPrograms();
@@ -59,7 +73,6 @@ const Bridge = ({ options, customStyles }) => {
         setRegexPattern(new RegExp(selectedProgram.pattern));
       } else {
         setRegexPattern(new RegExp('^[0-9]{6}$')); //just 6 numbers 
-        
       }
     }
   };
@@ -123,6 +136,14 @@ const Bridge = ({ options, customStyles }) => {
   const selectOptions = loyaltyPrograms.map(program => ({
     value: program.pid,
     label: program.name,
+    currency: program.currency,
+    enrol_link: program.enrol_link, 
+    terms: program.terms_c_link,
+    member_format: program.member_format,
+    process_time: program.process_time,
+    description: program.description, 
+    
+    
   }));
 
   const triggerElement = (
@@ -131,6 +152,7 @@ const Bridge = ({ options, customStyles }) => {
       <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
     </div>
   );
+
   const handleConfirmTransaction = async () => {
     // for now set session data of points to new points
     sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
@@ -151,7 +173,7 @@ const Bridge = ({ options, customStyles }) => {
       "member_first": userData.firstName, 
       "member_last": userData.lastName,
       "transaction_date": transaction_date,
-      "ref_num": "any1", 
+      "ref_num": generateRefNum(), 
       "amount": inputValue2,
       "additional_info": "any",
     };
@@ -175,18 +197,18 @@ const Bridge = ({ options, customStyles }) => {
         data.ref_num,
         data.amount,
         data.additional_info,
-      
       );
   
       console.log('Transaction successful:', result);
-      // Handle successful transaction (e.g., show a success message, redirect, etc.)
+      alert("Transaction Successful!");
+      window.location.reload();
     } catch (error) {
       console.error('Error confirming transaction:', error);
-      // Handle error (e.g., show an error message)
     }
   };
 
-
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false);
 
   return (
     <section id="bridge-section" className="bridge-section">
@@ -215,6 +237,9 @@ const Bridge = ({ options, customStyles }) => {
           }
         }}
       />
+      <button type="button" onClick={openModal} disabled={!selectedOption}>
+        More Information
+      </button>
       {selectedOption && (
         <div className="input-container">
           {inputState === 'initial' ? (
@@ -223,7 +248,7 @@ const Bridge = ({ options, customStyles }) => {
                 type="text"
                 id="memIdBox"
                 name="memIdBox"
-                placeholder="Your Membership ID e.g. ROYAL123456A"
+                placeholder="Insert your Membership ID here"
                 value={inputValue1}
                 onChange={handleInputChange1}
                 onKeyDown={(e) => handleKeyDown(e, 'memIdBox')}
@@ -259,17 +284,36 @@ const Bridge = ({ options, customStyles }) => {
               onClosing={() => setIsOpen(false)}>
               <div className="transaction-details">
                 <p>From: FETCH BANK (-{inputValue2} FETCH)</p>
-                <p>To: {selectedOption ? selectOptions.label : ''} (+{inputValue2} ROYAL)</p>
+                <p>To: {selectedOption ? selectedOption.label : ''} (+{inputValue2} {selectedOption.currency})</p>
                 <p>Account Balance: {userData.points - (parseInt(inputValue2, 10) || 0)} FETCH Points</p>
               </div>
             </Collapsible>
             <button type="button" className="confirm-transaction-button" onClick= {handleConfirmTransaction}>Confirm Transaction</button>
             <p>All transfers are final. </p>
             </>
-            
           )}
         </div>
       )}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Loyalty Program Information"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        {selectedOption && (
+          <>
+            <h2>{selectedOption.label} Information</h2>
+            <p>Description: {selectedOption.description || 'No description available.'}</p>
+            <p>Processing Time: {selectedOption.process_time || 'N/A'}</p>
+            <a href={selectedOption.enrol_link} target="_blank" rel="noopener noreferrer">Register Here</a>
+            <a href ={selectedOption.terms} target = "_blank" rel = "noopener noreferrer"> Terms and Conditions</a>
+           
+            <button onClick={closeModal} className="close-button">Close</button>
+          </>
+        )}
+  
+      </Modal>
     </section>
   );
 };

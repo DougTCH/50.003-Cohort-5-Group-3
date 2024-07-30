@@ -81,8 +81,12 @@ const fetchTransactions = async (user_id) => {
       headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
     });
 
+
     return response.data;
   } catch (error) {
+    if (error.response && error.response.data.message === 'No records found') {
+      return [];}
+   
     console.log(user_id);
     console.error('Error in fetchTransaction:', error.response ? error.response.data : error.message);
     return hardcodedTransactions;
