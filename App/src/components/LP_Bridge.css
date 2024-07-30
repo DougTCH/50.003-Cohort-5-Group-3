@@ -64,6 +64,20 @@
     background-color: #b44b36; /* Darker shade for hover effect */
   }
   
+.modal_button{
+  background-color: #D95436; 
+    font-size: 10px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    border: 2px solid black;
+  
+    cursor: pointer;
+    outline: none;
+    text-align: center;
+    text-transform: uppercase; /* text uppercase */
+    letter-spacing: 2px; /* adds spacing between the letters */
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2); /* Adds a slight shadow */
+}
   /* Styles for the modal overlay */
 .modal-overlay {
   position: fixed;

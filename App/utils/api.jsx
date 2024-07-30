@@ -89,7 +89,7 @@ const fetchTransactions = async (user_id) => {
    
     console.log(user_id);
     console.error('Error in fetchTransaction:', error.response ? error.response.data : error.message);
-    return hardcodedTransactions;
+    return [];
   }
 };
 

@@ -257,7 +257,7 @@ const Bridge = ({ options, customStyles }) => {
           }
         }}
       />
-      <button type="button" onClick={openModal} disabled={!selectedOption}>
+      <button className='modal_button' type="button" onClick={openModal} disabled={!selectedOption}>
         More Information
       </button>
       {selectedOption && (
