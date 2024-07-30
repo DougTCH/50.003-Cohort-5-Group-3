@@ -3,6 +3,7 @@ import './profile.css';
 import UserDetails from './profileHelper/UserDetails';
 import TierProgress from './profileHelper/TierProgress';
 import Tasks from './profileHelper/Tasks';
+import GoldenDogBone from './profileHelper/GoldenDogBone';
 
 const Profile = () => {
   const [tasks, setTasks] = useState([
@@ -36,7 +37,7 @@ const Profile = () => {
     },
     {
       id: 5,
-      description: 'Make an appointment with FETCH to evaluate your finances ',
+      description: 'Make an appointment with FETCH to evaluate your finances',
       reward: '25 Treats',
       status: 'not-claimable',
       points: 25,
@@ -92,14 +93,16 @@ const Profile = () => {
     },
   ]);
 
+  const [goldenBones, setGoldenBones] = useState(0);
+
   const makeClaimable = () => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.status === 'not-claimable' ? { ...task, status: 'claimable' } : task
     ));
   };
 
   const handleClaim = (taskId) => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === taskId ? { ...task, status: 'done' } : task
     ));
   };
@@ -108,9 +111,10 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-content">
         <div className="profile-top">
-          <UserDetails />
-          <TierProgress tasks={tasks} />
+          <UserDetails goldenBones={goldenBones} />
+          <TierProgress tasks={tasks} setGoldenBones={setGoldenBones} goldenBones={goldenBones} />
         </div>
+        <GoldenDogBone goldenBones={goldenBones} />
         <Tasks tasks={tasks} handleClaim={handleClaim} makeClaimable={makeClaimable} />
       </div>
     </div>

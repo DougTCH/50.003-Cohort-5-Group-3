@@ -13,9 +13,10 @@ const tiers = [
   'Titan'
 ];
 
-const TierProgress = ({ tasks = [] }) => {
+const TierProgress = ({ tasks = [], setGoldenBones, goldenBones }) => {
   const [currentPoints, setCurrentPoints] = useState(0);
   const [currentTierIndex, setCurrentTierIndex] = useState(0);
+  const [unclaimedBones, setUnclaimedBones] = useState(0);
 
   useEffect(() => {
     const totalPoints = tasks.reduce((acc, task) => task.status === 'done' ? acc + task.points : acc, 0);
@@ -28,11 +29,22 @@ const TierProgress = ({ tasks = [] }) => {
       newTierIndex += 1;
     }
 
+    if (newTierIndex > currentTierIndex) {
+      setUnclaimedBones(prev => prev + (newTierIndex - currentTierIndex));
+    }
+
     setCurrentPoints(newPoints);
     setCurrentTierIndex(newTierIndex);
-  }, [tasks]);
+  }, [tasks, currentTierIndex]);
 
   const progressPercentage = (currentPoints / 100) * 100;
+
+  const handleClaim = () => {
+    if (unclaimedBones > 0) {
+      setGoldenBones(goldenBones + 1);
+      setUnclaimedBones(unclaimedBones - 1);
+    }
+  };
 
   return (
     <div className="tier-info">
@@ -49,8 +61,13 @@ const TierProgress = ({ tasks = [] }) => {
         )}
         <div className="reward-details">
           <p>Reward for completing this tier: <span>1x Golden Bone</span></p>
-          <button className="claim-button">CLAIM</button>
+          <button className="claim-button" onClick={handleClaim} disabled={unclaimedBones === 0}>
+            CLAIM
+          </button>
         </div>
+        {unclaimedBones > 0 && (
+          <p className="unclaimed-bones-message">You have {unclaimedBones} unclaimed {unclaimedBones > 1 ? 'bones' : 'bone'}</p>
+        )}
       </div>
     </div>
   );
