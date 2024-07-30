@@ -4,7 +4,7 @@ import Collapsible from 'react-collapsible';
 import Modal from 'react-modal';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms, sendTransaction } from '../../utils/api';
+import { fetchLoyaltyPrograms , fetchUserPoints, sendTransaction, updateUserPoints} from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 
 Modal.setAppElement('#root'); // Accessibility setting for the modal
@@ -21,11 +21,13 @@ const Bridge = ({ options, customStyles }) => {
   const [submitTransaction, setSubmitTransaction] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [points, setPoints] = useState(0);
 
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
     points: 0,
+    user_id: '',
   });
 
   const generateRefNum = () => {
@@ -51,6 +53,20 @@ const Bridge = ({ options, customStyles }) => {
     };
     fetchPrograms();
   }, []);
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      try{
+        const points = await fetchUserPoints(userData.user_id);
+        setPoints(points)
+      } catch (error) {
+        console.error('Error fetching user points: ', error)
+      }
+    };
+    if (userData.user_id){
+      fetchPoints();
+    }
+  }, [userData.user_id])
 
   const handleMenuOpen = () => {
     setPlaceholder("Search by name");
@@ -155,7 +171,11 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleConfirmTransaction = async () => {
     // for now set session data of points to new points
-    sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
+    // sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
+    const newPoints = points - parseInt(inputValue2, 10);
+    setPoints(newPoints);
+    updateUserPoints(userData.user_id, newPoints)
+
     const formatDateToDDMMYY = (date) => {
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -215,7 +235,7 @@ const Bridge = ({ options, customStyles }) => {
       <div className="label"><p>Sender</p></div>
       <div className="fetch-box">
         <p className="fetch-label">Fetch</p>
-        <p className="available-points">Available: {userData.points} Points</p>
+        <p className="available-points">Available: {points} Points</p>
       </div>
       <div className="label"><p>Receiver</p></div>
       <Select
@@ -285,7 +305,7 @@ const Bridge = ({ options, customStyles }) => {
               <div className="transaction-details">
                 <p>From: FETCH BANK (-{inputValue2} FETCH)</p>
                 <p>To: {selectedOption ? selectedOption.label : ''} (+{inputValue2} {selectedOption.currency})</p>
-                <p>Account Balance: {userData.points - (parseInt(inputValue2, 10) || 0)} FETCH Points</p>
+                <p>Account Balance: {(points - parseInt(inputValue2, 10) || 0)} FETCH Points</p>
               </div>
             </Collapsible>
             <button type="button" className="confirm-transaction-button" onClick= {handleConfirmTransaction}>Confirm Transaction</button>

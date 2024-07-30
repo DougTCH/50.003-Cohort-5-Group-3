@@ -94,7 +94,6 @@ const fetchTransactions = async (user_id) => {
 };
 
 
-
 const sendTransaction = async (
   app_id,
   loyalty_pid,
@@ -110,7 +109,7 @@ const sendTransaction = async (
 ) => {
   try {
     const response = await axios.post(
-      'http://localhost:3000/transact/add_record', // replace with your backend URL
+      'http://localhost:3000/transact/add_record', 
       {
         app_id,
         loyalty_pid,
@@ -133,6 +132,7 @@ const sendTransaction = async (
     throw error; // rethrow the error after logging it
   }
 };
+
 const API_URL = 'http://localhost:5001/api';
 
 const login = async (email, password) => {
@@ -143,7 +143,29 @@ const register = async (email, password, firstName, lastName) => {
   return axios.post(`${API_URL}/register`, { email, password, firstName, lastName });
 };
 
+const fetchUserPoints = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/points/${userId}`);
+    return response.data.points;
+  } catch (error) {
+    console.error('Error fetching user points:', error);
+    throw error; // rethrow error so caller can handle it
+  }
+};
+
+const updateUserPoints = async (userId, newPoints) => {
+  try{
+    const response = await axios.post(`${API_URL}/update_points/${userId}`, {newPoints});
+    // handle response
+    console.log('Points updates successfully: ', response.data);
+    alert(`Points updated: ${response.data.user.points} points remaining`)
+  } catch (error) {
+    console.error('Error updating points:', error.response?.data || error.message);
+    alert('Failed to update points.')
+  }
+}
 
 
-export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, sendTransaction };
+
+export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints };
 
