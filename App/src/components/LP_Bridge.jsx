@@ -4,7 +4,7 @@ import Collapsible from 'react-collapsible';
 import Modal from 'react-modal';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms , fetchUserPoints, sendTransaction, updateUserPoints} from '../../utils/api.jsx';
+import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 
 Modal.setAppElement('#root'); // Accessibility setting for the modal
@@ -22,6 +22,7 @@ const Bridge = ({ options, customStyles }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [points, setPoints] = useState(0);
+  const [alertShown, setAlertShown] = useState(false); // New state for tracking alert display
 
   const [userData, setUserData] = useState({
     firstName: '',
@@ -56,17 +57,17 @@ const Bridge = ({ options, customStyles }) => {
 
   useEffect(() => {
     const fetchPoints = async () => {
-      try{
+      try {
         const points = await fetchUserPoints(userData.user_id);
-        setPoints(points)
+        setPoints(points);
       } catch (error) {
-        console.error('Error fetching user points: ', error)
+        console.error('Error fetching user points: ', error);
       }
     };
-    if (userData.user_id){
+    if (userData.user_id) {
       fetchPoints();
     }
-  }, [userData.user_id])
+  }, [userData.user_id]);
 
   const handleMenuOpen = () => {
     setPlaceholder("Search by name");
@@ -83,12 +84,13 @@ const Bridge = ({ options, customStyles }) => {
     setInputValue2('');
     setInputError('');
     setSubmitTransaction(false);
+    setAlertShown(false); // Reset alert state on new selection
     if (option) {
       const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
       if (selectedProgram && selectedProgram.pattern) {
         setRegexPattern(new RegExp(selectedProgram.pattern));
       } else {
-        setRegexPattern(new RegExp('^[0-9]{6}$')); //just 6 numbers 
+        setRegexPattern(new RegExp('^[0-9]{6}$')); // Just 6 numbers
       }
     }
   };
@@ -98,11 +100,19 @@ const Bridge = ({ options, customStyles }) => {
   };
 
   const handleInputChange2 = (e) => {
-    setInputValue2(e.target.value);
-    if (e.target.value) {
-      setSubmitTransaction(true);
+    const value = e.target.value;
+    // Use regex to allow only numbers and prevent non-numeric input
+    if (/^(?!0(\.0+)?$)(?!.*[eE])(\d*\.?\d*)$/.test(value)) {
+      setInputValue2(value);
+      setSubmitTransaction(value !== '');
+      setAlertShown(false); // Reset alert state on valid input
     } else {
+      setInputValue2('');
       setSubmitTransaction(false);
+      if (!alertShown) { // Show alert only once
+        alert("Invalid Amount");
+        setAlertShown(true);
+      }
     }
   };
 
@@ -115,7 +125,14 @@ const Bridge = ({ options, customStyles }) => {
         setInputError('Invalid membership ID.');
       }
     } else if (inputId === 'amountBox') {
-      // Handle amount submission
+      if (!isNaN(inputValue2) && inputValue2 > 0) {
+        // Proceed with the transaction logic
+      } else {
+        if (!alertShown) { // Ensure alert only shown once
+          alert("Invalid Amount");
+          setAlertShown(true);
+        }
+      }
     }
   };
 
@@ -152,19 +169,18 @@ const Bridge = ({ options, customStyles }) => {
   const selectOptions = loyaltyPrograms.map(program => ({
     value: program.pid,
     label: program.name,
+    conversion: program.conversion,
     currency: program.currency,
-    enrol_link: program.enrol_link, 
+    enrol_link: program.enrol_link,
     terms: program.terms_c_link,
     member_format: program.member_format,
     process_time: program.process_time,
-    description: program.description, 
-    
-    
+    description: program.description,
   }));
 
   const triggerElement = (
     <div className="collapsible-trigger">
-      Transfer Breakdown   
+      Transfer Breakdown
       <img src={arrowImage} alt="arrow" className={`arrow ${isOpen ? 'open' : ''}`} />
     </div>
   );
@@ -174,7 +190,7 @@ const Bridge = ({ options, customStyles }) => {
     // sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
     const newPoints = points - parseInt(inputValue2, 10);
     setPoints(newPoints);
-    updateUserPoints(userData.user_id, newPoints)
+    updateUserPoints(userData.user_id, newPoints);
 
     const formatDateToDDMMYY = (date) => {
       const day = String(date.getDate()).padStart(2, '0');
@@ -182,30 +198,30 @@ const Bridge = ({ options, customStyles }) => {
       const year = String(date.getFullYear());
       return `${day}${month}${year}`;
     };
-  
+
     const transaction_date = formatDateToDDMMYY(new Date());
 
     const data = {
-      "app_id": "CITY_BANK",   
+      "app_id": "CITY_BANK",
       "loyalty_pid": selectedOption ? selectedOption.value : "any",
       "user_id": userData.user_id,
       "member_id": inputValue1,
-      "member_first": userData.firstName, 
+      "member_first": userData.firstName,
       "member_last": userData.lastName,
       "transaction_date": transaction_date,
-      "ref_num": generateRefNum(), 
+      "ref_num": generateRefNum(),
       "amount": inputValue2,
       "additional_info": "any",
     };
     console.log('sending transaction data', data);
-  
+
     try {
       // Assuming the token is stored in sessionStorage
       const token = sessionStorage.getItem('tctoken');
       if (!token) {
         throw new Error("User is not authenticated. Please log in.");
       }
-  
+
       const result = await sendTransaction(
         data.app_id,
         data.loyalty_pid,
@@ -218,7 +234,7 @@ const Bridge = ({ options, customStyles }) => {
         data.amount,
         data.additional_info,
       );
-  
+
       console.log('Transaction successful:', result);
       alert("Transaction Successful!");
       window.location.reload();
@@ -281,8 +297,8 @@ const Bridge = ({ options, customStyles }) => {
               <div className="amount-container">
                 <input
                   type="number"
-                  min = '1' 
-                  max = {points}
+                  min="1"
+                  max={points}
                   id="amountBox"
                   name="amountBox"
                   placeholder="0"
@@ -292,26 +308,28 @@ const Bridge = ({ options, customStyles }) => {
                 />
                 <p className="fetch-points">FETCH Points</p>
                 <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
+
               </div>
             </>
           )}
           {submitTransaction && (
             <>
-            <Collapsible 
-              trigger={triggerElement}
-              className='collapsible-breakdown' 
-              triggerTagName='div' 
-              transitionTime={10}
-              onOpening={() => setIsOpen(true)}
-              onClosing={() => setIsOpen(false)}>
-              <div className="transaction-details">
-                <p>From: FETCH BANK (-{inputValue2} FETCH)</p>
-                <p>To: {selectedOption ? selectedOption.label : ''} (+{inputValue2} {selectedOption.currency})</p>
-                <p>Account Balance: {(points - parseInt(inputValue2, 10) || 0)} FETCH Points</p>
-              </div>
-            </Collapsible>
-            <button type="button" className="confirm-transaction-button" onClick= {handleConfirmTransaction}>Confirm Transaction</button>
-            <p>All transfers are final. </p>
+              <Collapsible
+                trigger={triggerElement}
+                className='collapsible-breakdown'
+                triggerTagName='div'
+                transitionTime={10}
+                onOpening={() => setIsOpen(true)}
+                onClosing={() => setIsOpen(false)}>
+                <div className="transaction-details">
+                  <p>From: FETCH BANK (-{inputValue2} FETCH)</p>
+                  <p>To: {selectedOption ? selectedOption.label : ''} (+{inputValue2 * selectedOption.conversion} {selectedOption.currency})</p>
+                  <p>Conversion Rate: 1 FETCH = {selectedOption.conversion} {selectedOption.currency}</p>
+                  <p>Account Balance: {(points - parseInt(inputValue2, 10) || 0)} FETCH Points</p>
+                </div>
+              </Collapsible>
+              <button type="button" className="confirm-transaction-button" onClick={handleConfirmTransaction}>Confirm Transaction</button>
+              <p>All transfers are final. </p>
             </>
           )}
         </div>
@@ -329,12 +347,12 @@ const Bridge = ({ options, customStyles }) => {
             <p>Description: {selectedOption.description || 'No description available.'}</p>
             <p>Processing Time: {selectedOption.process_time || 'N/A'}</p>
             <a href={selectedOption.enrol_link} target="_blank" rel="noopener noreferrer">Register Here</a>
-            <a href ={selectedOption.terms} target = "_blank" rel = "noopener noreferrer"> Terms and Conditions</a>
-           
+            <a href={selectedOption.terms} target="_blank" rel="noopener noreferrer"> Terms and Conditions</a>
+
             <button onClick={closeModal} className="close-button">Close</button>
           </>
         )}
-  
+
       </Modal>
     </section>
   );

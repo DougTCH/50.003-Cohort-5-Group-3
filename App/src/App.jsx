@@ -72,7 +72,7 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated && !showSplash && location.pathname !== '/login' && location.pathname !== '/register') {
+    if (!showSplash && !isAuthenticated && location.pathname !== '/login' && location.pathname !== '/register') {
       navigate('/login', { replace: true });
     }
   }, [isAuthenticated, showSplash, navigate, location.pathname]);
@@ -85,8 +85,9 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
 
   return (
     <>
-      {showSplash && <Splash onFinish={onSplashFinish} />}
-      {isAuthenticated ? (
+      {showSplash ? (
+        <Splash onFinish={onSplashFinish} />
+      ) : isAuthenticated ? (
         <>
           <Header role={role} onLogout={onLogout} />
           <Routes>
@@ -99,12 +100,15 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
         </>
       ) : (
         <Routes>
-          <Route path="*" element={<UnauthenticatedRoutes onLogin={onLogin} />} />
+          <Route path="/login" element={<Login onLogin={onLogin} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       )}
     </>
   );
 };
+
 
 const AuthenticatedRoutes = ({ isAuthenticated, role }) => {
   const location = useLocation();
