@@ -280,7 +280,9 @@ const Bridge = ({ options, customStyles }) => {
               <div className="label"><p>Amount You Are Sending</p></div>
               <div className="amount-container">
                 <input
-                  type="text"
+                  type="number"
+                  min = '1' 
+                  max = {points}
                   id="amountBox"
                   name="amountBox"
                   placeholder="0"
