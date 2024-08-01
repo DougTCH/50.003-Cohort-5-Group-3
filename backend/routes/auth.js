@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
   if (userExists) return res.status(400).json({ message: 'User already exists' });
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ email, password: hashedPassword , firstName, lastName , points: 1000});
+  const newUser = new User({ email, password: hashedPassword , firstName, lastName , points: 1000});  
   await newUser.save();
 
   res.json({ message: 'User registered successfully' });
@@ -26,7 +26,7 @@ router.post('/login', async (req, res) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-  const token = jwt.sign({ id: user._id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' });
+  const token = jwt.sign({ id: user._id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' }); // generate token
   //send json with details 
   //unencrypt first name and lastname 
   res.json({ message: 'Login successful', token,
@@ -37,7 +37,6 @@ router.post('/login', async (req, res) => {
       lastName: user.lastName,
       points: user.points
     }
-
    });
 });
 

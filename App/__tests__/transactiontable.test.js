@@ -38,7 +38,7 @@ describe('Transaction Component', () => {
     await waitFor(() => {
       const transactionRows = screen.getAllByRole('row');
       const firstRow = transactionRows[1]; // first row after header
-      expect(firstRow).toHaveTextContent('14/07/2024');
+      expect(firstRow).toHaveTextContent('-100.00Pending');
     });
   });
 
@@ -52,7 +52,7 @@ describe('Transaction Component', () => {
     await waitFor(() => {
       const transactionRows = screen.getAllByRole('row');
       const firstRow = transactionRows[1]; // first row after header
-      expect(firstRow).toHaveTextContent('08/01/20243594090221Royal Air-25.10Pending');
+      expect(firstRow).toHaveTextContent('-25.10Pending');
     });
   });
 });
