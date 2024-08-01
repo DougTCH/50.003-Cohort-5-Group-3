@@ -215,7 +215,7 @@ const Bridge = ({ options, customStyles }) => {
 
     const data = {
       "app_id": "CITY_BANK",
-      "loyalty_pid": selectedOption ? selectedOption.value : "any",
+      "loyalty_pid": selectedOption ? selectedOption.label : "any",
       "user_id": userData.user_id,
       "member_id": inputValue1,
       "member_first": userData.firstName,
