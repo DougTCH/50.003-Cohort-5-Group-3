@@ -87,8 +87,8 @@ const Bridge = ({ options, customStyles }) => {
     setAlertShown(false); // Reset alert state on new selection
     if (option) {
       const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
-      if (selectedProgram && selectedProgram.pattern) {
-        setRegexPattern(new RegExp(selectedProgram.pattern));
+      if (selectedProgram && selectedProgram.member_format) {
+        setRegexPattern(new RegExp(selectedProgram.member_format));
       } else {
         setRegexPattern(new RegExp('^[0-9]{6}$')); // Just 6 numbers
       }
@@ -101,20 +101,32 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleInputChange2 = (e) => {
     const value = e.target.value;
-    // Use regex to allow only numbers and prevent non-numeric input
-    if (/^(?!0(\.0+)?$)(?!.*[eE])(\d*\.?\d*)$/.test(value)) {
-      setInputValue2(value);
-      setSubmitTransaction(value !== '');
-      setAlertShown(false); // Reset alert state on valid input
+    // Use regex to allow only valid numbers and prevent non-numeric input like 'e'
+    if (/^(?!0(?!$))(?=.*\d)^\d*\.?\d*$/.test(value)) {
+      const numericValue = parseFloat(value);
+      
+      if (numericValue > points) {
+        setInputValue2('');
+        setSubmitTransaction(false);
+        if (!alertShown) { // Show alert only once
+          alert("Invalid Amount: Exceeds available points.");
+          setAlertShown(true);
+        }
+      } else {
+        setInputValue2(value);
+        setSubmitTransaction(value !== '');
+        setAlertShown(false); // Reset alert state on valid input
+      }
     } else {
       setInputValue2('');
       setSubmitTransaction(false);
       if (!alertShown) { // Show alert only once
-        alert("Invalid Amount");
+        alert("Invalid Amount: Please enter a valid number.");
         setAlertShown(true);
       }
     }
   };
+  
 
   const handleInputSubmit = (inputId) => {
     if (inputId === 'memIdBox') {
@@ -162,7 +174,7 @@ const Bridge = ({ options, customStyles }) => {
   }, [inputValue1, inputValue2]);
 
   const handleMaxClick = () => {
-    setInputValue2(userData.points.toString());
+    setInputValue2(points.toString());
     setSubmitTransaction(true);
   };
 

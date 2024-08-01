@@ -50,7 +50,7 @@ const Login = ({ onLogin }) => {
         // Transfer Connect login
         try {
           
-          let appcode = "ROYAL_FINANCE"; //origninal is FETCH , more test: NATIONAL_BANKING, KINGSMAN_BANK
+          let appcode = "FETCH"; //origninal is FETCH , more test: NATIONAL_BANKING, KINGSMAN_BANK
 
           const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, appcode });
           sessionStorage.setItem('tctoken', tcResponse.data.token);
