@@ -34,6 +34,7 @@ const Login = ({ onLogin }) => {
           const { user, token } = data;
           localStorage.setItem('token', token);
           localStorage.setItem('role', 'user');
+          
           // Set session data
           sessionStorage.setItem('firstName', user.firstName);
           sessionStorage.setItem('lastName', user.lastName);
@@ -48,7 +49,9 @@ const Login = ({ onLogin }) => {
   
         // Transfer Connect login
         try {
+          
           let appcode = "ROYAL_FINANCE"; //origninal is FETCH , more test: NATIONAL_BANKING, KINGSMAN_BANK
+
           const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, appcode });
           sessionStorage.setItem('tctoken', tcResponse.data.token);
           console.log("Login on Transfer Connect works");

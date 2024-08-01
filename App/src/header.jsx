@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './header.css';
 import bankLogo from './assets/FETCH_LOGOS/FETCH_LOGO_HORIZONTAL.svg'
 import bellIcon from './assets/UI_ASSETS/UI_RED_BELL.svg'
@@ -11,8 +11,11 @@ import logoutIcon from './assets/UI_ASSETS/UI_WHITE_LOGOUT_BUTTON.svg'
 function Header({ onLogout, role }) {
 
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [isNotificationsClicked, setIsNotificationsClicked] = useState(false);
+  const [isProfileClicked, setIsProfileClicked] = useState(false);
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   
   useEffect(() => {
@@ -25,6 +28,25 @@ function Header({ onLogout, role }) {
     fetchNotificationsStatus();
   }, []);
   
+  useEffect(() => {
+    // Reset profile and notifications clicked state when location changes
+    if (location.pathname !== '/profile' && location.pathname !== '/admin/Dashboard') {
+      setIsProfileClicked(false);
+    }
+    if (location.pathname !== '/notifications') {
+      setIsNotificationsClicked(false);
+    }
+  }, [location]);
+
+  const handleNotificationsClick = () => {
+    setIsNotificationsClicked(true);
+    navigate('/notifications');
+  };
+
+  const handleProfileClick = () => {
+    setIsProfileClicked(true);
+    navigate(role === 'admin' ? '/admin/Dashboard' : '/profile');
+  };
 
   return (
     <header>
@@ -32,8 +54,8 @@ function Header({ onLogout, role }) {
         <img className="logo" src={bankLogo} alt="Fetch Banking Logo" />
         <div className="Header_Buttons">
           <button
-            onClick={() => navigate('/notifications')}
-            className="Notification_Button"
+            onClick={handleNotificationsClick}
+            className={`Notification_Button ${isNotificationsClicked ? 'clicked' : ''}`}
             aria-label="Notification"
           >
             <img
@@ -43,8 +65,8 @@ function Header({ onLogout, role }) {
             />
           </button>
           <button
-            onClick={() => navigate(role === 'admin' ? '/admin/Dashboard' : '/profile')}
-            className="Profile"
+            onClick={handleProfileClick}
+            className={`Profile ${isProfileClicked ? 'clicked' : ''}`}
             aria-label="Profile"
           >
             <img src={profileIcon} alt="Profile Icon" className="Profile_Icon" />
@@ -57,18 +79,18 @@ function Header({ onLogout, role }) {
       <nav className="nav">
         {role !== 'admin' ? (
           <>
-            <Link to="/">Home</Link>
-            <Link to="/accounts">My Accounts</Link>
-            <Link to="/transfer">Transfer</Link>
-            <Link to="/pay">Pay</Link>
-            <Link to="/cards">Cards</Link>
-            <Link to="/apply">Apply</Link>
-            <Link to="/loyaltypoints">Loyalty Points<sup>NEW!</sup></Link>
+            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
+            <Link to="/accounts" className={location.pathname === '/accounts' ? 'active' : ''}>My Accounts</Link> 
+            <Link to="/transfer" className={location.pathname === '/transfer' ? 'active' : ''}>Transfer</Link> 
+            <Link to="/pay" className={location.pathname === '/pay' ? 'active' : ''}>Pay</Link> 
+            <Link to="/cards" className={location.pathname === '/cards' ? 'active' : ''}>Cards</Link> 
+            <Link to="/apply" className={location.pathname === '/apply' ? 'active' : ''}>Apply</Link> 
+            <Link to="/loyaltypoints" className={location.pathname === '/loyaltypoints' ? 'active' : ''}>Loyalty Points<sup>NEW!</sup></Link>
           </>
         ) : (
           <>
-            <Link to="/admin/Dashboard">Admin Dashboard</Link>
-            <Link to="/admin/loyaltypoints">Loyalty Points<sup>NEW!</sup></Link>
+            <Link to="/admin/Dashboard" className={location.pathname === '/admin/Dashboard' ? 'active' : ''}>Admin Dashboard</Link> 
+            <Link to="/admin/loyaltypoints" className={location.pathname === '/admin/loyaltypoints' ? 'active' : ''}>Loyalty Points<sup>NEW!</sup></Link> 
           </>
         )}
       </nav>

@@ -83,6 +83,7 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
     }
   }, [location, isAuthenticated]);
 
+  
   return (
     <>
       {showSplash ? (

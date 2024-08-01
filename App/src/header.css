@@ -58,6 +58,16 @@
     padding-left: 10px;
 }  
 
+.Profile.clicked {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.Notification_Button.clicked .Notification_Icon {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
 .Logout {
     background-color: #df9010
 }
@@ -105,4 +115,25 @@ sup {
     font-size: 0.75em;
     vertical-align: super;
     margin-left: 0.3em;
+}
+
+a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    margin: auto;
+    position: relative;
+}
+
+a.active::after {
+    content: '';
+    display: block;
+    width: 200px;
+    height: 6.5px;
+    background-color: white;
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
 }
