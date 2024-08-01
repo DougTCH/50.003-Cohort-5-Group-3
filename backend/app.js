@@ -8,11 +8,11 @@ const app = express();
 require('dotenv').config();
 
 // Middleware
-app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.json());  // parses incoming json request, makes data accessible via req.body
+app.use(cors());  // enables cross-origin resource sharing
 
 // MongoDB connection
-const mongoURI = process.env.MONGODB_URI;
+const mongoURI = process.env.MONGODB_URI; // this is the mongoDB connection string
 
 mongoose.connect(mongoURI).then(() => {
   console.log('Connected to MongoDB');
@@ -22,6 +22,10 @@ mongoose.connect(mongoURI).then(() => {
 
 // Routes
 const authRoutes = require('./routes/auth');
+const transactRoutes = require('./routes/transact');
+
 app.use('/api', authRoutes);
+app.use('/api', transactRoutes);
+
 
 module.exports = app;

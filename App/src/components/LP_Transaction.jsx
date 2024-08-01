@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTransactions } from '../../utils/api'; // Import the fetchTransactions function
+import { fetchTransactions } from '../../utils/api';
 import './LP_Transaction.css';
 import { getUserData } from '../../utils/userdata';
 
@@ -9,32 +9,41 @@ const Transaction = () => {
     firstName: '',
     lastName: '',
     points: 0,
-  })
+  });
+
   useEffect(() => {
     const data = getUserData();
     setUserData(data);
   }, []);
 
-  // Call the API to get the transactions
   useEffect(() => {
     const fetchAndSetTransactions = async () => {
-      const transactions = await fetchTransactions(userData.user_id);
-      setTransactions(transactions);
+      if (userData.user_id) {
+        console.log("user id is ", userData.user_id);
+        const transactions = await fetchTransactions(userData.user_id);
+        console.log(transactions);
+        setTransactions(transactions);
+      }
     };
     fetchAndSetTransactions();
-  }, []);
+  }, [userData.user_id]);
 
   const [page, setPage] = useState(1);
   const limit = 4; // number of transactions per page
   const total = transactions.length;
 
-  const parseDate = (dateStr) => {
-    const [day, month, year] = dateStr.split('/').map(Number);
-    return new Date(year, month - 1, day);
+  const formatDate = (dateStr) => {
+    if (dateStr && dateStr.length === 8) {
+      const day = dateStr.slice(0, 2);
+      const month = dateStr.slice(2, 4);
+      const year = dateStr.slice(4);
+      return `${day}/${month}/${year}`;
+    }
+    return dateStr;
   };
 
   const sortedTransactions = [...transactions].sort(
-    (a, b) => parseDate(b.date) - parseDate(a.date)
+    (a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)
   );
 
   const startIndex = (page - 1) * limit;
@@ -62,9 +71,9 @@ const Transaction = () => {
         <tbody>
           {currentTransactions.map((transaction, index) => (
             <tr key={index}>
-              <td>{transaction.date}</td>
-              <td>{transaction.transactionId}</td>
-              <td>{transaction.receiver}</td>
+              <td>{formatDate(transaction.transaction_date)}</td>
+              <td>{transaction.t_id}</td>
+              <td>{transaction.loyalty_pid}</td>
               <td>{transaction.amount}</td>
               <td>{transaction.status}</td>
             </tr>

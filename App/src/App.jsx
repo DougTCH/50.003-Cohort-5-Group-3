@@ -38,8 +38,8 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+  
+    localStorage.clear()
     sessionStorage.clear();
     setIsAuthenticated(false);
     setRole('');
@@ -72,19 +72,23 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated && !showSplash) {
-      navigate('/login');
+    if (!showSplash && !isAuthenticated && location.pathname !== '/login' && location.pathname !== '/register') {
+      navigate('/login', { replace: true });
     }
-  }, [isAuthenticated, showSplash, navigate]);
+  }, [isAuthenticated, showSplash, navigate, location.pathname]);
 
   useEffect(() => {
-    sessionStorage.setItem('lastPath', location.pathname);
-  }, [location]);
+    if (isAuthenticated) {
+      sessionStorage.setItem('lastPath', location.pathname);
+    }
+  }, [location, isAuthenticated]);
 
+  
   return (
     <>
-      {showSplash && <Splash onFinish={onSplashFinish} />}
-      {isAuthenticated ? (
+      {showSplash ? (
+        <Splash onFinish={onSplashFinish} />
+      ) : isAuthenticated ? (
         <>
           <Header role={role} onLogout={onLogout} />
           <Routes>
@@ -97,12 +101,15 @@ const Main = ({ showSplash, isAuthenticated, role, onSplashFinish, onLogin, onLo
         </>
       ) : (
         <Routes>
-          <Route path="*" element={<UnauthenticatedRoutes onLogin={onLogin} />} />
+          <Route path="/login" element={<Login onLogin={onLogin} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       )}
     </>
   );
 };
+
 
 const AuthenticatedRoutes = ({ isAuthenticated, role }) => {
   const location = useLocation();
@@ -124,7 +131,7 @@ const AuthenticatedRoutes = ({ isAuthenticated, role }) => {
       <Route path="/loyaltypoints" element={<PrivateRoute element={<LoyaltyPoints />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} /> 
       <Route path="/notifications" element={<PrivateRoute element={<Notifications />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} />
       <Route path="/profile" element={<PrivateRoute element={<Profile />} isAuthenticated={isAuthenticated} role={role} requiredRole="user" />} />
-      <Route path="*" element={<Navigate to={lastPath} />} />
+      <Route path="*" element={<Navigate to={lastPath} replace />} />
     </Routes>
   );
 };
@@ -142,7 +149,7 @@ const AdminRoutes = ({ isAuthenticated, role }) => {
     <Routes>
       <Route path="/admin/Dashboard" element={<PrivateRoute element={<AdminDashboard />} isAuthenticated={isAuthenticated} role={role} requiredRole="admin" />} /> 
       <Route path="/admin/loyaltypoints" element={<PrivateRoute element={<AdminLoyaltyPoints />} isAuthenticated={isAuthenticated} role={role} requiredRole="admin" />} /> 
-      <Route path="*" element={<Navigate to={lastPath} />} />
+      <Route path="*" element={<Navigate to={lastPath} replace />} />
     </Routes>
   );
 };
@@ -151,7 +158,7 @@ const UnauthenticatedRoutes = ({ onLogin }) => (
   <Routes>
     <Route path="/login" element={<Login onLogin={onLogin} />} />
     <Route path="/register" element={<Register />} />
-    <Route path="*" element={<Navigate to="/login" />} />
+    <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>
 );
 
