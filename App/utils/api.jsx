@@ -182,6 +182,20 @@ const fetchUserPoints = async (userId) => {
   }
 };
 
+// Fetch user details by ID
+const fetchUserDetails = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/${userId}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user details:', error.response ? error.response.data : error.message);
+    return null;
+  }
+};
+
+// Fetch all users
 const fetchAllUsers = async () => {
   try {
     const response = await axios.get(`${API_URL}/users`, {
@@ -206,7 +220,24 @@ const updateUserPoints = async (userId, newPoints) => {
   }
 };
 
-const fetchAllTransactions = async () => {
+const fetchAllPendingTransactions = async () => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
+
+    const response = await axios.get('http://localhost:3000/transact/obtain_record/pending_all', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending transactions:', error.response ? error.response.data : error.message);
+    return [];
+  }
+};
+
+const fetchAllProcessedTransactions = async () => {
   try {
     const token = sessionStorage.getItem('tctoken');
     if (!token) {
@@ -218,10 +249,10 @@ const fetchAllTransactions = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching transactions:', error.response ? error.response.data : error.message);
+    console.error('Error fetching processed transactions:', error.response ? error.response.data : error.message);
     return [];
   }
 };
 
-export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, fetchAllUsers, fetchAllTransactions };
+export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, fetchUserDetails, fetchAllUsers, fetchAllPendingTransactions, fetchAllProcessedTransactions };
 

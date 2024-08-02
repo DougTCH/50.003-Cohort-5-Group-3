@@ -1,19 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAllTransactions } from '../../../utils/api';
+import { fetchAllPendingTransactions, fetchAllProcessedTransactions } from '../../../utils/api';
 import './AdminLoyaltyPoints.css';
 
 const AdminLoyaltyPoints = () => {
+  const [pendingTransactions, setPendingTransactions] = useState([]);
+  const [processedTransactions, setProcessedTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [page, setPage] = useState(1);
-  const limit = 4; // Number of transactions per page
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [newPending, setNewPending] = useState(false);
+  const [newProcessed, setNewProcessed] = useState(false);
+  const [newDeleteRequests, setNewDeleteRequests] = useState(false);
+  const limit = 10;
 
   useEffect(() => {
     const fetchAndSetTransactions = async () => {
-      const transactions = await fetchAllTransactions();
-      setTransactions(transactions);
+      const pending = await fetchAllPendingTransactions();
+      const processed = await fetchAllProcessedTransactions();
+      setPendingTransactions(pending);
+      setProcessedTransactions(processed);
+      setTransactions([...pending, ...processed]);
     };
     fetchAndSetTransactions();
   }, []);
+
+  useEffect(() => {
+    const checkForNewTransactions = () => {
+      const lastLogin = new Date(sessionStorage.getItem('lastLogin'));
+
+      const hasNewPending = pendingTransactions.some(transaction => 
+        new Date(transaction.transaction_date) > lastLogin);
+      const hasNewProcessed = processedTransactions.some(transaction => 
+        new Date(transaction.transaction_date) > lastLogin);
+
+      setNewPending(hasNewPending);
+      setNewProcessed(hasNewProcessed);
+    };
+
+    if (sessionStorage.getItem('lastLogin')) {
+      checkForNewTransactions();
+    }
+  }, [pendingTransactions, processedTransactions]);
 
   const formatDate = (dateStr) => {
     if (dateStr && dateStr.length === 8) {
@@ -25,7 +52,14 @@ const AdminLoyaltyPoints = () => {
     return dateStr;
   };
 
-  const sortedTransactions = [...transactions].sort(
+  const filteredTransactions = transactions.filter((transaction) => {
+    if (selectedFilter === 'All') return true;
+    if (selectedFilter === 'Pending') return transaction.status === 'Pending';
+    if (selectedFilter === 'Processed') return transaction.status === 'Processed';
+    return true;
+  });
+
+  const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)
   );
 
@@ -37,10 +71,30 @@ const AdminLoyaltyPoints = () => {
     setPage(newPage);
   };
 
-  const totalPages = Math.ceil(transactions.length / limit);
+  const totalPages = Math.ceil(filteredTransactions.length / limit);
 
   return (
     <div className="transaction-table-container">
+      <div className="filter-container">
+        <button
+          className={selectedFilter === 'All' ? 'active' : ''}
+          onClick={() => setSelectedFilter('All')}
+        >
+          All
+        </button>
+        <button
+          className={selectedFilter === 'Pending' ? 'active' : ''}
+          onClick={() => setSelectedFilter('Pending')}
+        >
+          Pending {newPending && <span className="red-dot"></span>}
+        </button>
+        <button
+          className={selectedFilter === 'Processed' ? 'active' : ''}
+          onClick={() => setSelectedFilter('Processed')}
+        >
+          Processed {newProcessed && <span className="red-dot"></span>}
+        </button>
+      </div>
       <table className="transaction-table">
         <thead>
           <tr>

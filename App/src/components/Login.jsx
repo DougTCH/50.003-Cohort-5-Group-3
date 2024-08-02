@@ -41,6 +41,7 @@ const Login = ({ onLogin }) => {
           sessionStorage.setItem('points', user.points);
           sessionStorage.setItem('id', user.id);
           sessionStorage.setItem('email', email);
+          sessionStorage.setItem('lastLogin', new Date(user.lastLogin).toISOString());
           console.log('set session data', user.id);
         } catch (error) {
           console.error('Login API error:', error);

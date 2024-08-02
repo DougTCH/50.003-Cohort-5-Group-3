@@ -305,6 +305,7 @@
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 5px;
+  max-width: 200px;
 }
 
 .points-injection label {
