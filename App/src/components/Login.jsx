@@ -19,11 +19,13 @@ const Login = ({ onLogin }) => {
       if (email === 'admin@gmail.com' && password === 'admin') {
         localStorage.setItem('token', 'admin');
         localStorage.setItem('role', 'user');
+        sessionStorage.setItem('email', email);
         onLogin();
         navigate('/');
       } else if (email === 'secret@gmail.com' && password === 'secret') {
         localStorage.setItem('token', 'admin');
         localStorage.setItem('role', 'admin');
+        sessionStorage.setItem('email', email);
         onLogin();
         navigate('/admin/Dashboard');
       } else {
@@ -40,6 +42,7 @@ const Login = ({ onLogin }) => {
           sessionStorage.setItem('lastName', user.lastName);
           sessionStorage.setItem('points', user.points);
           sessionStorage.setItem('id', user.id);
+          sessionStorage.setItem('email', email);
           console.log('set session data', user.id);
         } catch (error) {
           console.error('Login API error:', error);
@@ -85,7 +88,7 @@ const Login = ({ onLogin }) => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Username"
+                        placeholder="Email"
                         required
                     />
                     <input

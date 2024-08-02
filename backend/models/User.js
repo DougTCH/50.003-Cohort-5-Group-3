@@ -5,8 +5,11 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   firstName: { type: String, required: true},
   lastName: { type: String, required: true},
-  points: {type: Number, required: true }
-  
+  points: {type: Number, required: true },
+  mobileNumber: { type: String, default: '' },
+  tier: { type: Number, default: 0 },
+  membershipIDs: { type: [String], default: [] },
+  vouchers: { type: [String], default: [] }
 });
 
 const User = mongoose.model('User', UserSchema);
