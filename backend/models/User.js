@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
   mobileNumber: { type: String, default: '' },
   tier: { type: Number, default: 0 },
   membershipIDs: { type: [String], default: [] },
-  vouchers: { type: [String], default: [] }
+  vouchers: { type: [String], default: [] },
+  lastLogin: { type: Date, default: null }
 });
 
 const User = mongoose.model('User', UserSchema);

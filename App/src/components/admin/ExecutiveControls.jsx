@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAllUsers, updateUserPoints } from '../../../utils/api';
+import PopupModal from './PopupModal';
 
 const ExecutiveControls = () => {
   const [users, setUsers] = useState([]);
@@ -7,6 +8,7 @@ const ExecutiveControls = () => {
   const [tierPoints, setTierPoints] = useState(0);
   const [bankPoints, setBankPoints] = useState(0);
   const [voucherInjections, setVoucherInjections] = useState(0);
+  const [popupMessage, setPopupMessage] = useState(null);
 
   useEffect(() => {
     const fetchAndSetUsers = async () => {
@@ -28,19 +30,40 @@ const ExecutiveControls = () => {
 
   const handleUpdatePoints = async () => {
     if (selectedUser) {
+      const parsedTierPoints = parseInt(tierPoints) || 0;
+      const parsedBankPoints = parseInt(bankPoints) || 0;
+      const parsedVoucherInjections = parseInt(voucherInjections) || 0;
+
+      if (isNaN(parsedTierPoints) || isNaN(parsedBankPoints) || isNaN(parsedVoucherInjections)) {
+        alert('Please enter valid numbers');
+        return;
+      }
+
       try {
-        await updateUserPoints(selectedUser._id, {
-          tierPoints,
-          bankPoints,
-          voucherInjections
+        const result = await updateUserPoints(selectedUser._id, {
+          tierPoints: parsedTierPoints,
+          bankPoints: parsedBankPoints,
+          voucherInjections: parsedVoucherInjections
         });
-        alert('User points updated successfully!');
+        const { user } = result;  // Updated here to correctly extract user from response
+        setPopupMessage(
+          `Points added: ${parsedBankPoints}\nTier points added: ${parsedTierPoints}\nVouchers added: ${parsedVoucherInjections}`
+        );
+        setTimeout(() => {
+          setPopupMessage(null);
+        }, 3000);
       } catch (error) {
         console.error('Error updating user points:', error);
-        alert('Failed to update points.');
+        setPopupMessage('Failed to update points.');
+        setTimeout(() => {
+          setPopupMessage(null);
+        }, 3000);
       }
     } else {
-      alert('Please select a user');
+      setPopupMessage('Please select a user');
+      setTimeout(() => {
+        setPopupMessage(null);
+      }, 3000);
     }
   };
 
@@ -65,7 +88,7 @@ const ExecutiveControls = () => {
             <input
               type="number"
               value={tierPoints}
-              onChange={(e) => setTierPoints(parseInt(e.target.value))}
+              onChange={(e) => setTierPoints(e.target.value)}
             />
           </label>
           <label>
@@ -73,7 +96,7 @@ const ExecutiveControls = () => {
             <input
               type="number"
               value={bankPoints}
-              onChange={(e) => setBankPoints(parseInt(e.target.value))}
+              onChange={(e) => setBankPoints(e.target.value)}
             />
           </label>
           <label>
@@ -81,11 +104,14 @@ const ExecutiveControls = () => {
             <input
               type="number"
               value={voucherInjections}
-              onChange={(e) => setVoucherInjections(parseInt(e.target.value))}
+              onChange={(e) => setVoucherInjections(e.target.value)}
             />
           </label>
           <button onClick={handleUpdatePoints}>Update Points</button>
         </div>
+      )}
+      {popupMessage && (
+        <PopupModal message={popupMessage} onClose={() => setPopupMessage(null)} />
       )}
     </div>
   );

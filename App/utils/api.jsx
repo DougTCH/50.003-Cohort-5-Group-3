@@ -199,17 +199,12 @@ const updateUserPoints = async (userId, newPoints) => {
     const response = await axios.post(`${API_URL}/update_points/${userId}`, { newPoints }, {
       headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
     });
-    console.log('Points updated successfully: ', response.data);
-    alert(`Points updated: ${response.data.user.points} points remaining`);
     return response.data;
   } catch (error) {
     console.error('Error updating points:', error.response?.data || error.message);
-    alert('Failed to update points.');
     throw error;
   }
 };
-
-
 
 export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, fetchAllUsers };
 

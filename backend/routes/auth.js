@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-
 // Registration route
 router.post('/register', async (req, res) => {
   const { email, password , firstName , lastName } = req.body;
@@ -39,6 +38,10 @@ router.post('/login', async (req, res) => {
   if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
   const token = jwt.sign({ id: user._id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' }); // generate token
+
+  user.lastLogin = new Date();
+  await user.save();
+
   //send json with details 
   //unencrypt first name and lastname 
   res.json({ message: 'Login successful', token,
@@ -51,7 +54,8 @@ router.post('/login', async (req, res) => {
       mobileNumber: user.mobileNumber,
       tier: user.tier,
       membershipIDs: user.membershipIDs,
-      vouchers: user.vouchers
+      vouchers: user.vouchers,
+      lastLogin: user.lastLogin
     }
    });
 });
@@ -106,6 +110,7 @@ router.put('/users/:userId', async (req, res) => {
   }
 });
 
+
 // Fetch all users
 router.get('/users', async (req, res) => {
   try {
@@ -116,10 +121,9 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// Update user points
 router.post('/update_points/:userId', async (req, res) => {
   const { userId } = req.params;
-  const { tierPoints, bankPoints, voucherInjections } = req.body.newPoints;
+  const { tierPoints = 0, bankPoints = 0, voucherInjections = 0 } = req.body.newPoints || {};
 
   try {
     const user = await User.findById(userId);
@@ -127,14 +131,18 @@ router.post('/update_points/:userId', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Increment user points
-    user.points += tierPoints + bankPoints + voucherInjections;
+    user.tier += tierPoints;
+    user.points += bankPoints;
+    user.vouchers.push(...Array(voucherInjections).fill('Voucher'));
+
     await user.save();
 
     res.json({ user });
   } catch (error) {
+    console.error('Error updating user points:', error);
     res.status(500).json({ message: 'Error updating user points', error });
   }
 });
+
 
 module.exports = router;
