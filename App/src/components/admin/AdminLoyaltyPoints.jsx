@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTransactions } from '../../../utils/api';
+import { fetchAllTransactions } from '../../../utils/api';
 import './AdminLoyaltyPoints.css';
 
 const AdminLoyaltyPoints = () => {
@@ -9,7 +9,7 @@ const AdminLoyaltyPoints = () => {
 
   useEffect(() => {
     const fetchAndSetTransactions = async () => {
-      const transactions = await fetchTransactions();
+      const transactions = await fetchAllTransactions();
       setTransactions(transactions);
     };
     fetchAndSetTransactions();

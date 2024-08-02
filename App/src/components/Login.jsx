@@ -23,9 +23,46 @@ const Login = ({ onLogin }) => {
         onLogin();
         navigate('/');
       } else if (email === 'secret@gmail.com' && password === 'secret') {
-        localStorage.setItem('token', 'admin');
-        localStorage.setItem('role', 'admin');
-        sessionStorage.setItem('email', email);
+        //localStorage.setItem('token', 'admin');
+        //localStorage.setItem('role', 'admin');
+        //sessionStorage.setItem('email', email);
+        //sessionStorage.setItem('tctoken', 'dummyToken');
+
+        try {
+          const response = await axios.post('http://localhost:5001/api/login', { email, password });
+          const data = response.data;
+          const { user, token } = data;
+          localStorage.setItem('token', 'admin');
+          localStorage.setItem('role', 'admin');
+          
+          // Set session data
+          sessionStorage.setItem('firstName', user.firstName);
+          sessionStorage.setItem('lastName', user.lastName);
+          sessionStorage.setItem('points', user.points);
+          sessionStorage.setItem('id', user.id);
+          sessionStorage.setItem('email', email);
+          console.log('set session data', user.id);
+        } catch (error) {
+          console.error('Login API error:', error);
+          setMessage('Login failed');
+          return; // Stop further processing
+        }
+  
+        // Transfer Connect login
+        try {
+          
+          let appcode = "ROYAL_FINANCE"; //origninal is FETCH , more test: NATIONAL_BANKING, KINGSMAN_BANK
+
+          const tcResponse = await axios.post('http://localhost:3000/auth/login', { username: email, password, appcode });
+          sessionStorage.setItem('tctoken', tcResponse.data.token);
+          console.log("Login on Transfer Connect works");
+          console.log("tctoken is ", sessionStorage.getItem('tctoken'))
+        } catch (error) {
+          console.error('Transfer Connect login error:', error);
+          setMessage('Transfer Connect login failed');
+          return; // Stop further processing
+        }
+
         onLogin();
         navigate('/admin/Dashboard');
       } else {

@@ -206,5 +206,22 @@ const updateUserPoints = async (userId, newPoints) => {
   }
 };
 
-export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, fetchAllUsers };
+const fetchAllTransactions = async () => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
+
+    const response = await axios.get('http://localhost:3000/transact/obtain_record/processed_all', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching transactions:', error.response ? error.response.data : error.message);
+    return [];
+  }
+};
+
+export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, fetchAllUsers, fetchAllTransactions };
 

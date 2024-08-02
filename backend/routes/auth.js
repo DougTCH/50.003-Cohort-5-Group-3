@@ -27,7 +27,6 @@ router.post('/register', async (req, res) => {
   res.json({ message: 'User registered successfully' });
 });
 
-
 // Login route
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -60,7 +59,6 @@ router.post('/login', async (req, res) => {
    });
 });
 
-
 // Delete user route
 router.delete('/delete/:userId', async (req, res) => {
   try {
@@ -77,7 +75,6 @@ router.delete('/delete/:userId', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 // Update user details route
 router.put('/users/:userId', async (req, res) => {
@@ -109,7 +106,6 @@ router.put('/users/:userId', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 // Fetch all users
 router.get('/users', async (req, res) => {
