@@ -354,6 +354,7 @@ const Bridge = ({ options, customStyles }) => {
             <h2>{selectedOption.label} Information</h2>
             <p>Description: {selectedOption.description || 'No description available.'}</p>
             <p>Processing Time: {selectedOption.process_time || 'N/A'}</p>
+            <p>Conversion Rate: 1 FETCH = {selectedOption.conversion} {selectedOption.currency}</p>
             <a href={selectedOption.enrol_link} target="_blank" rel="noopener noreferrer">Register Here</a>
             <a href={selectedOption.terms} target="_blank" rel="noopener noreferrer"> Terms and Conditions</a>
 
