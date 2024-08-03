@@ -34,10 +34,10 @@ const Bridge = ({ options, customStyles }) => {
   const generateRefNum = () => {
     // Use current timestamp for time component
     const timestamp = Date.now().toString();
-
+  
     // Use Math.random() for a random component, converted to base 36 (0-9a-z)
     const randomComponent = Math.random().toString(36).substring(2, 8).toUpperCase();
-
+  
     // Combine both parts
     return `${timestamp}-${randomComponent}`;
   };

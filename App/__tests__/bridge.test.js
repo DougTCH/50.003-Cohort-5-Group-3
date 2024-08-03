@@ -61,6 +61,17 @@ describe('Bridge Component', () => {
     fetchUserPoints.mockResolvedValue(mockUserData.points);
     sendTransaction.mockResolvedValue({ success: true });
     updateUserPoints.mockResolvedValue({ success: true });
+
+    // Mock sessionStorage
+    Object.defineProperty(window, 'sessionStorage', {
+      value: {
+        getItem: jest.fn(() => 'fake-token'),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+        clear: jest.fn(),
+      },
+      writable: true,
+    });
   });
 
   test('displays correct available points', async () => {
