@@ -158,10 +158,10 @@ const updateUserPoints = async (userId, newPoints) => {
     const response = await axios.post(`${API_URL}/update_points/${userId}`, {newPoints});
     // handle response
     console.log('Points updates successfully: ', response.data);
-    alert(`Points updated: ${response.data.user.points} points remaining`)
+   
   } catch (error) {
     console.error('Error updating points:', error.response?.data || error.message);
-    alert('Failed to update points.')
+
   }
 }
 
