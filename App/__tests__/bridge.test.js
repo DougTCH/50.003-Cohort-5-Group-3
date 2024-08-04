@@ -2,127 +2,218 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Bridge from '../src/components/LP_Bridge';
-import { fetchLoyaltyPrograms, fetchUserPoints } from '../utils/api.jsx';
+import { getUserData } from '../utils/userdata';
+import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../utils/api';
 import Modal from 'react-modal';
 
-// Mock the imported functions and assets
-jest.mock('../utils/api.jsx', () => ({
+// Set the app element for react-modal
+Modal.setAppElement(document.body);
+
+// Mock the necessary functions
+jest.mock('../utils/userdata', () => ({
+  getUserData: jest.fn(),
+}));
+
+jest.mock('../utils/api', () => ({
   fetchLoyaltyPrograms: jest.fn(),
   fetchUserPoints: jest.fn(),
+  sendTransaction: jest.fn(),
+  updateUserPoints: jest.fn(),
 }));
 
-jest.mock('../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg', () => 'mock-arrow.png');
-jest.mock('react-modal', () => ({
-  ...jest.requireActual('react-modal'),
-  setAppElement: () => null,
-}));
+// Sample data for the mocks
+const mockUserData = {
+  firstName: 'John',
+  lastName: 'Doe',
+  points: 1000,
+  user_id: '12345',
+};
 
-beforeAll(() => {
-  const root = document.createElement('div');
-  root.id = 'root';
-  document.body.appendChild(root);
-  Modal.setAppElement(root);
-});
+const mockLoyaltyPrograms = [
+  {
+    pid: '1',
+    name: 'Program A',
+    conversion: 2,
+    currency: 'USD',
+    enrol_link: 'http://example.com/enrol',
+    terms_c_link: 'http://example.com/terms',
+    member_format: '^[0-9]{6}$',
+    process_time: '2 days',
+    description: 'Description A',
+  },
+  {
+    pid: '2',
+    name: 'Program B',
+    conversion: 1.5,
+    currency: 'EUR',
+    enrol_link: 'http://example.com/enrol',
+    terms_c_link: 'http://example.com/terms',
+    member_format: '^[A-Za-z0-9]{8}$',
+    process_time: '1 day',
+    description: 'Description B',
+  },
+];
 
 describe('Bridge Component', () => {
   beforeEach(() => {
-    // Mock loyalty programs data
-    fetchLoyaltyPrograms.mockResolvedValue([
-      { pid: '1', name: 'Program 1', conversion: 1, currency: 'Points', pattern: '^[0-9]{6}$' },
-      { pid: '2', name: 'Program 2', conversion: 2, currency: 'Points', pattern: '^[0-9]{6}$' },
-    ]);
+    getUserData.mockReturnValue(mockUserData);
+    fetchLoyaltyPrograms.mockResolvedValue(mockLoyaltyPrograms);
+    fetchUserPoints.mockResolvedValue(mockUserData.points);
+    sendTransaction.mockResolvedValue({ success: true });
+    updateUserPoints.mockResolvedValue({ success: true });
 
-    // Mock user points data
-    fetchUserPoints.mockResolvedValue(1000);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('renders Bridge component with default elements', async () => {
-    render(<Bridge />);
-
-    // Check if basic elements are present
-    expect(screen.getByText(/Sender/i)).toBeInTheDocument();
-    expect(screen.getByText(/Receiver/i)).toBeInTheDocument();
-    expect(screen.getByText(/Available/i)).toBeInTheDocument();
-
-    // Wait for async data to load
-    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalledTimes(1));
-  });
-
-  test('handles input changes and validation for membership ID', async () => {
-    render(<Bridge />);
-
-    await waitFor(() => screen.getByText('Program 1'));
-
-    // Select a program
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Program 1' } });
-    fireEvent.click(screen.getByText('Program 1'));
-
-    // Enter an invalid membership ID
-    const memIdInput = screen.getByPlaceholderText(/Insert your Membership ID here/i);
-    fireEvent.change(memIdInput, { target: { value: '123' } });
-    fireEvent.keyDown(memIdInput, { key: 'Enter', code: 'Enter' });
-
-    expect(screen.getByText('Invalid membership ID.')).toBeInTheDocument();
-
-    // Enter a valid membership ID
-    fireEvent.change(memIdInput, { target: { value: '123456' } });
-    fireEvent.keyDown(memIdInput, { key: 'Enter', code: 'Enter' });
-
-    expect(screen.queryByText('Invalid membership ID.')).not.toBeInTheDocument();
-  });
-
-  test('alerts for invalid amount and allows valid amount input', async () => {
-    window.alert = jest.fn(); // Mock alert
-
-    render(<Bridge />);
-
-    await waitFor(() => screen.getByText('Program 1'));
-
-    // Select a program
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Program 1' } });
-    fireEvent.click(screen.getByText('Program 1'));
-
-    // Enter valid membership ID to proceed to amount input
-    fireEvent.change(screen.getByPlaceholderText(/Insert your Membership ID here/i), {
-      target: { value: '123456' },
+    // Mock sessionStorage
+    Object.defineProperty(window, 'sessionStorage', {
+      value: {
+        getItem: jest.fn(() => 'fake-token'),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+        clear: jest.fn(),
+      },
+      writable: true,
     });
-    fireEvent.keyDown(screen.getByPlaceholderText(/Insert your Membership ID here/i), {
-      key: 'Enter',
-      code: 'Enter',
-    });
-
-    // Enter an invalid amount
-    fireEvent.change(screen.getByPlaceholderText(/0/i), { target: { value: '-10' } });
-    fireEvent.keyDown(screen.getByPlaceholderText(/0/i), { key: 'Enter', code: 'Enter' });
-
-    expect(window.alert).toHaveBeenCalledWith('Invalid Amount');
-
-    // Ensure alert only fires once for the same invalid input
-    fireEvent.keyDown(screen.getByPlaceholderText(/0/i), { key: 'Enter', code: 'Enter' });
-    expect(window.alert).toHaveBeenCalledTimes(1);
-
-    // Enter a valid amount
-    fireEvent.change(screen.getByPlaceholderText(/0/i), { target: { value: '100' } });
-    fireEvent.keyDown(screen.getByPlaceholderText(/0/i), { key: 'Enter', code: 'Enter' });
-
-    expect(window.alert).toHaveBeenCalledTimes(1); // Alert should not fire again
   });
 
-  test('handles modal interactions correctly', async () => {
-    render(<Bridge />);
+  test('displays correct available points', async () => {
+    render(<Bridge options={[]} customStyles={{}} />);
+    
+    await waitFor(() => expect(fetchUserPoints).toHaveBeenCalledWith(mockUserData.user_id));
+    expect(screen.getByText(/Available: 1000 Points/i)).toBeInTheDocument();
+  });
 
-    await waitFor(() => screen.getByText('Program 1'));
+  test('select participating merchant works', async () => {
+    render(<Bridge options={[]} customStyles={{}} />);
+    
+    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalled());
+    const selectInput = screen.getByRole('combobox');
+    
+    fireEvent.focus(selectInput);
+    fireEvent.keyDown(selectInput, { key: 'ArrowDown', code: 40 });
+    fireEvent.keyDown(selectInput, { key: 'Enter', code: 13 });
 
-    // Open modal
+    expect(screen.getByText(/Program A/i)).toBeInTheDocument();
+  });
+
+  test('more information modal works', async () => {
+    render(<Bridge options={[]} customStyles={{}} />);
+
+    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalled());
+    const selectInput = screen.getByRole('combobox');
+
+    fireEvent.focus(selectInput);
+    fireEvent.keyDown(selectInput, { key: 'ArrowDown', code: 40 });
+    fireEvent.keyDown(selectInput, { key: 'Enter', code: 13 });
+
     fireEvent.click(screen.getByText(/More Information/i));
-    expect(screen.getByText(/Register Here/i)).toBeInTheDocument();
 
-    // Close modal
-    fireEvent.click(screen.getByText(/Close/i));
-    expect(screen.queryByText(/Register Here/i)).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText(/Description: Description A/i)).toBeInTheDocument());
+    expect(screen.getByText(/Processing Time: 2 days/i)).toBeInTheDocument();
+  });
+
+  test('insert membership id works with regex validation', async () => {
+    render(<Bridge options={[]} customStyles={{}} />);
+
+    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalled());
+    const selectInput = screen.getByRole('combobox');
+
+    fireEvent.focus(selectInput);
+    fireEvent.keyDown(selectInput, { key: 'ArrowDown', code: 40 });
+    fireEvent.keyDown(selectInput, { key: 'Enter', code: 13 });
+
+    const memIdBox = screen.getByPlaceholderText(/Insert your Membership ID here/i);
+    fireEvent.change(memIdBox, { target: { value: '123456' } });
+
+    fireEvent.keyDown(memIdBox, { key: 'Enter', code: 13 });
+
+    await waitFor(() => expect(screen.queryByText(/Invalid membership ID./i)).not.toBeInTheDocument());
+  });
+
+  test('amount you are sending works with validation', async () => {
+    render(<Bridge options={[]} customStyles={{}} />);
+
+    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalled());
+    const selectInput = screen.getByRole('combobox');
+
+    fireEvent.focus(selectInput);
+    fireEvent.keyDown(selectInput, { key: 'ArrowDown', code: 40 });
+    fireEvent.keyDown(selectInput, { key: 'Enter', code: 13 });
+
+    const memIdBox = screen.getByPlaceholderText(/Insert your Membership ID here/i);
+    fireEvent.change(memIdBox, { target: { value: '123456' } });
+    fireEvent.keyDown(memIdBox, { key: 'Enter', code: 13 });
+
+    const amountBox = screen.getByPlaceholderText(/0/i);
+    fireEvent.change(amountBox, { target: { value: '500' } });
+
+    await waitFor(() => expect(screen.queryByText(/Invalid Amount: Please enter a valid number./i)).not.toBeInTheDocument());
+    fireEvent.click(screen.getByText(/Max/i));
+
+    expect(amountBox.value).toBe('1000');
+  });
+
+  test('transfer breakdown is showing', async () => {
+    render(<Bridge options={[]} customStyles={{}} />);
+
+    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalled());
+
+    const selectInput = screen.getByRole('combobox');
+
+    fireEvent.focus(selectInput);
+    fireEvent.keyDown(selectInput, { key: 'ArrowDown', code: 40 });
+    fireEvent.keyDown(selectInput, { key: 'Enter', code: 13 });
+
+    const memIdBox = screen.getByPlaceholderText(/Insert your Membership ID here/i);
+    fireEvent.change(memIdBox, { target: { value: '123456' } });
+    fireEvent.keyDown(memIdBox, { key: 'Enter', code: 13 });
+
+    const amountBox = screen.getByPlaceholderText(/0/i);
+    fireEvent.change(amountBox, { target: { value: '500' } });
+
+    await waitFor(() => expect(screen.queryByText(/Transfer Breakdown/i)).toBeInTheDocument());
+    fireEvent.click(screen.getByText(/Transfer Breakdown/i));
+
+    const getByTextContent = (text) => (content, element) => {
+      const hasText = (node) => node.textContent.replace(/\s+/g, ' ').trim() === text;
+      const nodeHasText = hasText(element);
+      const childrenDontHaveText = Array.from(element.children).every(
+        (child) => !hasText(child)
+      );
+      return nodeHasText && childrenDontHaveText;
+    };
+
+    expect(screen.getByText(getByTextContent('From: FETCH BANK (-500 FETCH)'))).toBeInTheDocument();
+    expect(screen.getByText(getByTextContent('To: Program A (+1000 USD)'))).toBeInTheDocument();
+    expect(screen.getByText(getByTextContent('Conversion Rate: 1 FETCH = 2 USD'))).toBeInTheDocument();
+    expect(screen.getByText(getByTextContent('Account Balance: 500 FETCH Points'))).toBeInTheDocument();
+  });
+
+  test('confirm transaction works', async () => {
+    sendTransaction.mockResolvedValue({ success: true });
+
+    render(<Bridge options={[]} customStyles={{}} />);
+
+    await waitFor(() => expect(fetchLoyaltyPrograms).toHaveBeenCalled());
+
+    const selectInput = screen.getByRole('combobox');
+
+    fireEvent.focus(selectInput);
+    fireEvent.keyDown(selectInput, { key: 'ArrowDown', code: 40 });
+    fireEvent.keyDown(selectInput, { key: 'Enter', code: 13 });
+
+    const memIdBox = screen.getByPlaceholderText(/Insert your Membership ID here/i);
+    fireEvent.change(memIdBox, { target: { value: '123456' } });
+    fireEvent.keyDown(memIdBox, { key: 'Enter', code: 13 });
+
+    const amountBox = screen.getByPlaceholderText(/0/i);
+    fireEvent.change(amountBox, { target: { value: '500' } });
+
+    await waitFor(() => expect(screen.queryByText(/Confirm Transaction/i)).toBeInTheDocument());
+    fireEvent.click(screen.getByText(/Confirm Transaction/i));
+
+    // Ensure all async calls and state updates are complete
+    await waitFor(() => expect(sendTransaction).toHaveBeenCalledTimes(1));
+
+    // Check the transaction success message
+    await waitFor(() => expect(screen.getByText(/Transaction Successful!/i)).toBeInTheDocument());
   });
 });

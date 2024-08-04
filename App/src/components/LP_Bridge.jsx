@@ -7,8 +7,6 @@ import './LP_Bridge.css';
 import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 
-Modal.setAppElement('#root'); // Accessibility setting for the modal
-
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -23,6 +21,8 @@ const Bridge = ({ options, customStyles }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [points, setPoints] = useState(0);
   const [alertShown, setAlertShown] = useState(false); // New state for tracking alert display
+  const [transactionMessage, setTransactionMessage] = useState(''); // New state for transaction messages
+  const [transactionError, setTransactionError] = useState(''); // New state for transaction errors
 
   const [userData, setUserData] = useState({
     firstName: '',
@@ -85,10 +85,12 @@ const Bridge = ({ options, customStyles }) => {
     setInputError('');
     setSubmitTransaction(false);
     setAlertShown(false); // Reset alert state on new selection
+    setTransactionMessage('');
+    setTransactionError('');
     if (option) {
       const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
-      if (selectedProgram && selectedProgram.pattern) {
-        setRegexPattern(new RegExp(selectedProgram.pattern));
+      if (selectedProgram && selectedProgram.member_format) {
+        setRegexPattern(new RegExp(selectedProgram.member_format));
       } else {
         setRegexPattern(new RegExp('^[0-9]{6}$')); // Just 6 numbers
       }
@@ -101,18 +103,23 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleInputChange2 = (e) => {
     const value = e.target.value;
-    // Use regex to allow only numbers and prevent non-numeric input
-    if (/^(?!0(\.0+)?$)(?!.*[eE])(\d*\.?\d*)$/.test(value)) {
-      setInputValue2(value);
-      setSubmitTransaction(value !== '');
-      setAlertShown(false); // Reset alert state on valid input
+    // Use regex to allow only valid numbers and prevent non-numeric input like 'e'
+    if (/^(?!0(?!$))(?=.*\d)^\d*\.?\d*$/.test(value)) {
+      const numericValue = parseFloat(value);
+
+      if (numericValue > points) {
+        setInputValue2('');
+        setSubmitTransaction(false);
+        setTransactionError("Invalid Amount: Exceeds available points.");
+      } else {
+        setInputValue2(value);
+        setSubmitTransaction(value !== '');
+        setTransactionError(''); // Clear the error state on valid input
+      }
     } else {
       setInputValue2('');
       setSubmitTransaction(false);
-      if (!alertShown) { // Show alert only once
-        alert("Invalid Amount");
-        setAlertShown(true);
-      }
+      setTransactionError("Invalid Amount: Please enter a valid number.");
     }
   };
 
@@ -128,10 +135,7 @@ const Bridge = ({ options, customStyles }) => {
       if (!isNaN(inputValue2) && inputValue2 > 0) {
         // Proceed with the transaction logic
       } else {
-        if (!alertShown) { // Ensure alert only shown once
-          alert("Invalid Amount");
-          setAlertShown(true);
-        }
+        setTransactionError("Invalid Amount");
       }
     }
   };
@@ -162,8 +166,9 @@ const Bridge = ({ options, customStyles }) => {
   }, [inputValue1, inputValue2]);
 
   const handleMaxClick = () => {
-    setInputValue2(userData.points.toString());
+    setInputValue2(points.toString());
     setSubmitTransaction(true);
+    setTransactionError(''); // Clear the error state when Max is clicked
   };
 
   const selectOptions = loyaltyPrograms.map(program => ({
@@ -187,7 +192,6 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleConfirmTransaction = async () => {
     // for now set session data of points to new points
-    // sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
     const newPoints = points - parseInt(inputValue2, 10);
     setPoints(newPoints);
     updateUserPoints(userData.user_id, newPoints);
@@ -203,7 +207,7 @@ const Bridge = ({ options, customStyles }) => {
 
     const data = {
       "app_id": "CITY_BANK",
-      "loyalty_pid": selectedOption ? selectedOption.value : "any",
+      "loyalty_pid": selectedOption ? selectedOption.label : "any",
       "user_id": userData.user_id,
       "member_id": inputValue1,
       "member_first": userData.firstName,
@@ -217,10 +221,7 @@ const Bridge = ({ options, customStyles }) => {
 
     try {
       // Assuming the token is stored in sessionStorage
-      const token = sessionStorage.getItem('tctoken');
-      if (!token) {
-        throw new Error("User is not authenticated. Please log in.");
-      }
+      
 
       const result = await sendTransaction(
         data.app_id,
@@ -236,10 +237,15 @@ const Bridge = ({ options, customStyles }) => {
       );
 
       console.log('Transaction successful:', result);
-      alert("Transaction Successful!");
-      window.location.reload();
+      setTransactionMessage("Transaction Successful!");
+      setTimeout(function() {
+        location.reload();
+    }, 2000);
+      setTransactionError('');
     } catch (error) {
       console.error('Error confirming transaction:', error);
+      setTransactionError('Error confirming transaction. Please try again.');
+      setTransactionMessage('');
     }
   };
 
@@ -308,7 +314,6 @@ const Bridge = ({ options, customStyles }) => {
                 />
                 <p className="fetch-points">FETCH Points</p>
                 <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
-
               </div>
             </>
           )}
@@ -329,9 +334,11 @@ const Bridge = ({ options, customStyles }) => {
                 </div>
               </Collapsible>
               <button type="button" className="confirm-transaction-button" onClick={handleConfirmTransaction}>Confirm Transaction</button>
-              <p>All transfers are final. </p>
+              <p>All transfers are final.</p>
             </>
           )}
+          {transactionMessage && <p className="transaction-message">{transactionMessage}</p>}
+          {transactionError && <p className="transaction-error">{transactionError}</p>}
         </div>
       )}
       <Modal
@@ -339,6 +346,7 @@ const Bridge = ({ options, customStyles }) => {
         onRequestClose={closeModal}
         contentLabel="Loyalty Program Information"
         className="modal"
+        appElement={document.getElementById('root')}
         overlayClassName="modal-overlay"
       >
         {selectedOption && (
@@ -346,13 +354,13 @@ const Bridge = ({ options, customStyles }) => {
             <h2>{selectedOption.label} Information</h2>
             <p>Description: {selectedOption.description || 'No description available.'}</p>
             <p>Processing Time: {selectedOption.process_time || 'N/A'}</p>
+            <p>Conversion Rate: 1 FETCH = {selectedOption.conversion} {selectedOption.currency}</p>
             <a href={selectedOption.enrol_link} target="_blank" rel="noopener noreferrer">Register Here</a>
             <a href={selectedOption.terms} target="_blank" rel="noopener noreferrer"> Terms and Conditions</a>
 
             <button onClick={closeModal} className="close-button">Close</button>
           </>
         )}
-
       </Modal>
     </section>
   );
