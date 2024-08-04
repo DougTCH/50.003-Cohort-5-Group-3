@@ -19,10 +19,14 @@ function Header({ onLogout, role }) {
 
   
   useEffect(() => {
+    // Fetch email from sessionStorage
+    const storedEmail = sessionStorage.getItem('email');
+    setEmail(storedEmail || '');
+
     // Placeholder first
     const fetchNotificationsStatus = () => {
       // Placeholder first
-      const unreadNotifications = false;
+      const unreadNotifications = false; // Later replace with actual logic
       setHasUnreadNotifications(unreadNotifications);
     };
     fetchNotificationsStatus();
@@ -48,6 +52,8 @@ function Header({ onLogout, role }) {
     navigate(role === 'admin' ? '/admin/Dashboard' : '/profile');
   };
 
+  const isSecretEmail = email === 'secret@gmail.com';
+
   return (
     <header>
       <div className="Heading">
@@ -55,8 +61,9 @@ function Header({ onLogout, role }) {
         <div className="Header_Buttons">
           <button
             onClick={handleNotificationsClick}
-            className={`Notification_Button ${isNotificationsClicked ? 'clicked' : ''}`}
+            className={`Notification_Button ${isNotificationsClicked ? 'clicked' : ''} ${isSecretEmail ? 'disabled' : ''}`}
             aria-label="Notification"
+            disabled={isSecretEmail}
           >
             <img
               src={hasUnreadNotifications ? bellRingIcon : bellIcon}
@@ -66,8 +73,9 @@ function Header({ onLogout, role }) {
           </button>
           <button
             onClick={handleProfileClick}
-            className={`Profile ${isProfileClicked ? 'clicked' : ''}`}
+            className={`Profile ${isProfileClicked ? 'clicked' : ''} ${isSecretEmail ? 'disabled' : ''}`}
             aria-label="Profile"
+            disabled={isSecretEmail}
           >
             <img src={profileIcon} alt="Profile Icon" className="Profile_Icon" />
           </button>

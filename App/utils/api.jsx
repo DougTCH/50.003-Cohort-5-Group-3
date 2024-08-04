@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 
-
 const fallbackLoyaltyPrograms = [
   {
     "pid": "BEST_MOVERS",
@@ -136,11 +135,41 @@ const sendTransaction = async (
 const API_URL = 'http://localhost:5001/api';
 
 const login = async (email, password) => {
-  return axios.post(`${API_URL}/login`, { email, password });
+  try {
+    const response = await axios.post(`${API_URL}/login`, { email, password });
+    const { user } = response.data;
+    sessionStorage.setItem('id', user.id);
+    sessionStorage.setItem('firstName', user.firstName);
+    sessionStorage.setItem('lastName', user.lastName);
+    sessionStorage.setItem('points', user.points);
+    sessionStorage.setItem('mobileNumber', user.mobileNumber);
+    sessionStorage.setItem('tier', user.tier);
+    sessionStorage.setItem('membershipIDs', JSON.stringify(user.membershipIDs));
+    sessionStorage.setItem('vouchers', JSON.stringify(user.vouchers));
+    return response;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
 };
 
 const register = async (email, password, firstName, lastName) => {
-  return axios.post(`${API_URL}/register`, { email, password, firstName, lastName });
+  try {
+    const response = await axios.post(`${API_URL}/register`, { email, password, firstName, lastName });
+    const { user } = response.data;
+    sessionStorage.setItem('id', user.id);
+    sessionStorage.setItem('firstName', user.firstName);
+    sessionStorage.setItem('lastName', user.lastName);
+    sessionStorage.setItem('points', user.points);
+    sessionStorage.setItem('mobileNumber', user.mobileNumber);
+    sessionStorage.setItem('tier', user.tier);
+    sessionStorage.setItem('membershipIDs', JSON.stringify(user.membershipIDs));
+    sessionStorage.setItem('vouchers', JSON.stringify(user.vouchers));
+    return response;
+  } catch (error) {
+    console.error('Error registering:', error);
+    throw error;
+  }
 };
 
 const fetchUserPoints = async (userId) => {
@@ -153,19 +182,143 @@ const fetchUserPoints = async (userId) => {
   }
 };
 
+// Fetch user details by ID
+const fetchUserDetails = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/${userId}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user details:', error.response ? error.response.data : error.message);
+    return null;
+  }
+};
+
+// Fetch all users
+const fetchAllUsers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+    return response.data.users;
+  } catch (error) {
+    console.error('Error fetching users:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 const updateUserPoints = async (userId, newPoints) => {
-  try{
-    const response = await axios.post(`${API_URL}/update_points/${userId}`, {newPoints});
-    // handle response
-    console.log('Points updates successfully: ', response.data);
-   
+  
+  try {
+    const response = await axios.post(`${API_URL}/update_points/${userId}`, { newPoints }, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+    return response.data;
   } catch (error) {
     console.error('Error updating points:', error.response?.data || error.message);
-
+    throw error;
   }
-}
+};
 
+const fetchAllPendingTransactions = async () => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
 
+    const response = await axios.get('http://localhost:3000/transact/obtain_record/pending_all', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending transactions:', error.response ? error.response.data : error.message);
+    return [];
+  }
+};
 
-export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints };
+const fetchAllProcessedTransactions = async () => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
 
+    const response = await axios.get('http://localhost:3000/transact/obtain_record/processed_all', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching processed transactions:', error.response ? error.response.data : error.message);
+    return [];
+  }
+};
+
+const fetchAllDeleteRequests = async () => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
+
+    const response = await axios.get(`${API_URL}/transact/obtain_record/delete_requests_all`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching delete requests:', error.response ? error.response.data : error.message);
+    return [];
+  }
+};
+
+const deleteTransactionById = async (t_id) => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
+
+    const response = await axios.delete(`http://localhost:3000/transact/remove_record_by_tid/${t_id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting transaction:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+const submitDeleteRequest = async (transactionIds, userId) => {
+  try {
+    const response = await axios.post(`${API_URL}/transact/submit_delete_request`, {
+      transactionIds,
+      userId
+    }, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error in submitDeleteRequest:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export { 
+  login, 
+  register, 
+  fetchTransactions, 
+  fetchLoyaltyPrograms, 
+  fallbackLoyaltyPrograms, 
+  fetchUserPoints, 
+  sendTransaction, 
+  updateUserPoints, 
+  fetchUserDetails, 
+  fetchAllUsers, 
+  fetchAllPendingTransactions, 
+  fetchAllProcessedTransactions,
+  fetchAllDeleteRequests,
+  deleteTransactionById,
+  submitDeleteRequest
+};
