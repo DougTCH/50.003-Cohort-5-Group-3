@@ -254,5 +254,70 @@ const fetchAllProcessedTransactions = async () => {
   }
 };
 
-export { login, register, fetchTransactions, fetchLoyaltyPrograms, fallbackLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, fetchUserDetails, fetchAllUsers, fetchAllPendingTransactions, fetchAllProcessedTransactions };
+const fetchAllDeleteRequests = async () => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
 
+    const response = await axios.get(`${API_URL}/transact/obtain_record/delete_requests_all`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching delete requests:', error.response ? error.response.data : error.message);
+    return [];
+  }
+};
+
+const deleteTransactionById = async (t_id) => {
+  try {
+    const token = sessionStorage.getItem('tctoken');
+    if (!token) {
+      throw new Error('No token found in sessionStorage');
+    }
+
+    const response = await axios.delete(`http://localhost:3000/transact/remove_record_by_tid/${t_id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting transaction:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+const submitDeleteRequest = async (transactionIds, userId) => {
+  try {
+    const response = await axios.post(`${API_URL}/transact/submit_delete_request`, {
+      transactionIds,
+      userId
+    }, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error in submitDeleteRequest:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export { 
+  login, 
+  register, 
+  fetchTransactions, 
+  fetchLoyaltyPrograms, 
+  fallbackLoyaltyPrograms, 
+  fetchUserPoints, 
+  sendTransaction, 
+  updateUserPoints, 
+  fetchUserDetails, 
+  fetchAllUsers, 
+  fetchAllPendingTransactions, 
+  fetchAllProcessedTransactions,
+  fetchAllDeleteRequests,
+  deleteTransactionById,
+  submitDeleteRequest
+};

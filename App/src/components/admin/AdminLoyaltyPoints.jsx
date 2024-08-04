@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAllPendingTransactions, fetchAllProcessedTransactions } from '../../../utils/api';
+import { fetchAllPendingTransactions, fetchAllProcessedTransactions, fetchAllDeleteRequests, deleteTransactionById } from '../../../utils/api'; // Import the delete function
 import './AdminLoyaltyPoints.css';
 
 const AdminLoyaltyPoints = () => {
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const [processedTransactions, setProcessedTransactions] = useState([]);
+  const [deleteRequests, setDeleteRequests] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [page, setPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState('All');
@@ -17,9 +18,11 @@ const AdminLoyaltyPoints = () => {
     const fetchAndSetTransactions = async () => {
       const pending = await fetchAllPendingTransactions();
       const processed = await fetchAllProcessedTransactions();
+      const deleteReqs = await fetchAllDeleteRequests();
       setPendingTransactions(pending);
       setProcessedTransactions(processed);
-      setTransactions([...pending, ...processed]);
+      setDeleteRequests(deleteReqs);
+      setTransactions([...pending, ...processed, ...deleteReqs]);
     };
     fetchAndSetTransactions();
   }, []);
@@ -32,15 +35,18 @@ const AdminLoyaltyPoints = () => {
         new Date(transaction.transaction_date) > lastLogin);
       const hasNewProcessed = processedTransactions.some(transaction => 
         new Date(transaction.transaction_date) > lastLogin);
+      const hasNewDeleteRequests = deleteRequests.some(request =>
+        new Date(request.request_date) > lastLogin);
 
       setNewPending(hasNewPending);
       setNewProcessed(hasNewProcessed);
+      setNewDeleteRequests(hasNewDeleteRequests);
     };
 
     if (sessionStorage.getItem('lastLogin')) {
       checkForNewTransactions();
     }
-  }, [pendingTransactions, processedTransactions]);
+  }, [pendingTransactions, processedTransactions, deleteRequests]);
 
   const formatDate = (dateStr) => {
     if (dateStr && dateStr.length === 8) {
@@ -52,10 +58,20 @@ const AdminLoyaltyPoints = () => {
     return dateStr;
   };
 
+  const handleDeleteTransaction = async (t_id) => {
+    try {
+      await deleteTransactionById(t_id);
+      setTransactions(transactions.filter(transaction => transaction.t_id !== t_id));
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+    }
+  };
+
   const filteredTransactions = transactions.filter((transaction) => {
     if (selectedFilter === 'All') return true;
     if (selectedFilter === 'Pending') return transaction.status === 'Pending';
     if (selectedFilter === 'Processed') return transaction.status === 'Processed';
+    if (selectedFilter === 'DeleteRequests') return transaction.status === 'DeleteRequest';
     return true;
   });
 
@@ -94,6 +110,12 @@ const AdminLoyaltyPoints = () => {
         >
           Processed {newProcessed && <span className="red-dot"></span>}
         </button>
+        <button
+          className={selectedFilter === 'DeleteRequests' ? 'active' : ''}
+          onClick={() => setSelectedFilter('DeleteRequests')}
+        >
+          Delete Requests {newDeleteRequests && <span className="red-dot"></span>}
+        </button>
       </div>
       <table className="transaction-table">
         <thead>
@@ -104,6 +126,7 @@ const AdminLoyaltyPoints = () => {
             <th>Receiver</th>
             <th>Transfer Amount</th>
             <th>Status</th>
+            <th>Actions</th> {/* New column for actions */}
           </tr>
         </thead>
         <tbody>
@@ -111,10 +134,17 @@ const AdminLoyaltyPoints = () => {
             <tr key={index}>
               <td>{formatDate(transaction.transaction_date)}</td>
               <td>{transaction.t_id}</td>
-              <td>{transaction.user_id}</td> {/* Display User ID */}
+              <td>{transaction.user_id}</td>
               <td>{transaction.loyalty_pid}</td>
               <td>{transaction.amount}</td>
               <td>{transaction.status}</td>
+              <td>
+                {transaction.status === 'DeleteRequest' && (
+                  <button onClick={() => handleDeleteTransaction(transaction.t_id)}>
+                    Delete
+                  </button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
