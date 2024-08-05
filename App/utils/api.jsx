@@ -92,6 +92,21 @@ const fetchTransactions = async (user_id) => {
   }
 };
 
+const notifyServer = async (refNum) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/notify/${refNum}`);
+    if (response.status === 200) {
+      console.log('Notification response:', response.data);
+      return response.data;
+    } else {
+      console.error('Error in notification response:', response.data);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error sending notification:', error);
+    return null;
+  }
+};
 
 const sendTransaction = async (
   app_id,
@@ -131,6 +146,9 @@ const sendTransaction = async (
     throw error; // rethrow the error after logging it
   }
 };
+
+
+
 
 const API_URL = 'http://localhost:5001/api';
 
@@ -328,5 +346,6 @@ export {
   fetchAllProcessedTransactions,
   fetchAllDeleteRequests,
   deleteTransactionById,
-  submitDeleteRequest
+  submitDeleteRequest,
+  notifyServer
 };
