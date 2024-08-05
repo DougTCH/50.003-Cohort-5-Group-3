@@ -271,9 +271,9 @@ const Bridge = ({ options, customStyles }) => {
     
       console.log('Transaction SUCCESFUL');
       setTransactionMessage("Transaction Successful!");
-      /*setTimeout(function() {
+      setTimeout(function() {
         location.reload();
-      }, 2000); */
+      }, 2000); 
       setTransactionError('');
     } catch (error) {
       console.error('Error confirming transaction:', error);
