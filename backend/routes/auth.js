@@ -3,19 +3,23 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { encrypt, decrypt } = require('../utils/crypto');
 
 // Registration route
 router.post('/register', async (req, res) => {
-  const { email, password , firstName , lastName } = req.body;
+  const { email, password, firstName, lastName } = req.body;
   const userExists = await User.findOne({ email });
   if (userExists) return res.status(400).json({ message: 'User already exists' });
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ 
-    email, 
-    password: hashedPassword, 
-    firstName, 
-    lastName, 
+  const encryptedFirstName = encrypt(firstName);
+  const encryptedLastName = encrypt(lastName);
+
+  const newUser = new User({
+    email,
+    password: hashedPassword,
+    firstName: encryptedFirstName,
+    lastName: encryptedLastName,
     points: 1000,
     mobileNumber: '',
     tier: 0,
@@ -41,14 +45,17 @@ router.post('/login', async (req, res) => {
   user.lastLogin = new Date();
   await user.save();
 
-  //send json with details 
-  //unencrypt first name and lastname 
-  res.json({ message: 'Login successful', token,
+  // Decrypt first name and last name before sending response
+  const decryptedFirstName = decrypt(user.firstName);
+  const decryptedLastName = decrypt(user.lastName);
+
+  res.json({
+    message: 'Login successful', token,
     user: {
       id: user._id,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstName: decryptedFirstName,
+      lastName: decryptedLastName,
       points: user.points,
       mobileNumber: user.mobileNumber,
       tier: user.tier,
@@ -56,7 +63,7 @@ router.post('/login', async (req, res) => {
       vouchers: user.vouchers,
       lastLogin: user.lastLogin
     }
-   });
+  });
 });
 
 // Delete user route
@@ -79,12 +86,12 @@ router.delete('/delete/:userId', async (req, res) => {
 // Update user details route
 router.put('/users/:userId', async (req, res) => {
   try {
-    const { email, firstName, lastName, password, points } = req.body;
+    const { email, firstName, lastName, password, points, mobileNumber, tier, membershipIDs, vouchers } = req.body;
     const updates = {};
 
     if (email) updates.email = email;
-    if (firstName) updates.firstName = firstName;
-    if (lastName) updates.lastName = lastName;
+    if (firstName) updates.firstName = encrypt(firstName);
+    if (lastName) updates.lastName = encrypt(lastName);
     if (password) updates.password = await bcrypt.hash(password, 10);
     if (points !== undefined) updates.points = points;
     if (mobileNumber !== undefined) updates.mobileNumber = mobileNumber;
@@ -113,7 +120,15 @@ router.get('/user/:id', async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    res.json(user);
+    // Decrypt first name and last name before sending response
+    const decryptedFirstName = decrypt(user.firstName);
+    const decryptedLastName = decrypt(user.lastName);
+
+    res.json({
+      ...user._doc,
+      firstName: decryptedFirstName,
+      lastName: decryptedLastName
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -123,7 +138,12 @@ router.get('/user/:id', async (req, res) => {
 router.get('/users', async (req, res) => {
   try {
     const users = await User.find();
-    res.json({ users });
+    const decryptedUsers = users.map(user => ({
+      ...user._doc,
+      firstName: decrypt(user.firstName),
+      lastName: decrypt(user.lastName)
+    }));
+    res.json({ users: decryptedUsers });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching users', error });
   }
@@ -151,6 +171,5 @@ router.post('/update_points/:userId', async (req, res) => {
     res.status(500).json({ message: 'Error updating user points', error });
   }
 });
-
 
 module.exports = router;

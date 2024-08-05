@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Dashboard.css';
+import './dashboard.css';
 import AdminDetails from './AdminDetails';
 import SystemDetails from './SystemDetails';
 import VouchersPromotions from './VouchersPromotions';

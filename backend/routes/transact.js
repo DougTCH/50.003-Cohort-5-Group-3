@@ -110,4 +110,50 @@ router.post('/submit_delete_request', async (req, res) => {
     }
 });
 
+router.post('/update_tier/:userId', async (req, res) => {
+  const tiers = [
+    'Bronze',
+    'Silver',
+    'Gold',
+    'Platinum',
+    'Emerald',
+    'Diamond',
+    'Conqueror',
+    'Vanguard',
+    'Titan'
+  ];
+  
+  try {
+    const { userId } = req.params;
+    const { newTier } = req.body;
+
+    // Validate input
+    if (!userId || newTier === undefined) {
+      return res.status(400).json({ message: 'UserId and newTier are required' });
+    }
+
+    if (typeof newTier !== 'number' || newTier < 0 || newTier >= tiers.length) {
+      return res.status(400).json({ message: 'Invalid tier value' });
+    }
+
+    // Find user by ID and update tier
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { tier: newTier },
+      { new: true }
+    );
+
+    // If user not found
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Respond with the updated user
+    res.json({ message: 'Tier updated successfully', user });
+  } catch (error) {
+    console.error('Error updating user tier:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router

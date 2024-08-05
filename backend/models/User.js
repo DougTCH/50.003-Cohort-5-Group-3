@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String, required: true},
   points: {type: Number, required: true },
   mobileNumber: { type: String, default: '' },
-  tier: { type: Number, default: 0 },
+  tier: { type: Number, default: 0, min: 0, max: 8}, 
   membershipIDs: { type: [String], default: [] },
   vouchers: { type: [String], default: [] },
   lastLogin: { type: Date, default: null }

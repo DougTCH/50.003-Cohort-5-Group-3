@@ -7,6 +7,20 @@ import './LP_Bridge.css';
 import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 
+const tiers = [
+  'Bronze',
+  'Silver',
+  'Gold',
+  'Platinum',
+  'Emerald',
+  'Diamond',
+  'Conqueror',
+  'Vanguard',
+  'Titan'
+];
+
+const multipliers = [1, 1.2, 1.5, 1.7, 2, 2.5, 3, 3.5, 4]; // Example multipliers for each tier
+
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -29,6 +43,7 @@ const Bridge = ({ options, customStyles }) => {
     lastName: '',
     points: 0,
     user_id: '',
+    tier: 0, // Ensure tier is part of userData
   });
 
   const generateRefNum = () => {
@@ -192,7 +207,11 @@ const Bridge = ({ options, customStyles }) => {
 
   const handleConfirmTransaction = async () => {
     // for now set session data of points to new points
-    const newPoints = points - parseInt(inputValue2, 10);
+    const pointsToTransfer = parseInt(inputValue2, 10);
+    const userMultiplier = multipliers[userData.tier] || 1; // Get multiplier based on user's tier
+    const newPoints = points - pointsToTransfer;
+    const adjustedPoints = pointsToTransfer * userMultiplier;
+
     setPoints(newPoints);
     updateUserPoints(userData.user_id, newPoints);
 
@@ -214,14 +233,13 @@ const Bridge = ({ options, customStyles }) => {
       "member_last": userData.lastName,
       "transaction_date": transaction_date,
       "ref_num": generateRefNum(),
-      "amount": inputValue2,
+      "amount": adjustedPoints,
       "additional_info": "any",
     };
     console.log('sending transaction data', data);
 
     try {
       // Assuming the token is stored in sessionStorage
-      
 
       const result = await sendTransaction(
         data.app_id,
@@ -331,6 +349,9 @@ const Bridge = ({ options, customStyles }) => {
                   <p>To: {selectedOption ? selectedOption.label : ''} (+{inputValue2 * selectedOption.conversion} {selectedOption.currency})</p>
                   <p>Conversion Rate: 1 FETCH = {selectedOption.conversion} {selectedOption.currency}</p>
                   <p>Account Balance: {(points - parseInt(inputValue2, 10) || 0)} FETCH Points</p>
+                  <p>Tier: {tiers[userData.tier]} (Multiplier: x{multipliers[userData.tier]})</p>
+
+                  <p> Final Amount : {inputValue2 * selectedOption.conversion * multipliers[userData.tier]} {selectedOption.currency} </p>
                 </div>
               </Collapsible>
               <button type="button" className="confirm-transaction-button" onClick={handleConfirmTransaction}>Confirm Transaction</button>
