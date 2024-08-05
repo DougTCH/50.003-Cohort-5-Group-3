@@ -92,9 +92,13 @@ const fetchTransactions = async (user_id) => {
   }
 };
 
-const notifyServer = async (refNum) => {
+const notifyServer = async (ref_num) => {
   try {
-    const response = await axios.get(`http://localhost:3000/notify/${refNum}`);
+    const response = await axios.post(`http://localhost:3000/push/notify/${ref_num}`, {}, {
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('tctoken')}`
+      }
+    });
     if (response.status === 200) {
       console.log('Notification response:', response.data);
       return response.data;
@@ -107,6 +111,7 @@ const notifyServer = async (refNum) => {
     return null;
   }
 };
+
 
 const sendTransaction = async (
   app_id,

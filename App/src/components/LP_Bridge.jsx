@@ -7,6 +7,7 @@ import './LP_Bridge.css';
 import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, notifyServer } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 import axios from 'axios';
+import { createSearchParams } from 'react-router-dom';
 
 const publicVapidKey = 'BP_9uRZDQD-6I_BQAmLVYRMIw3FG-oQohuRXAwXX924yysDAEXBHrstsr--5GeEDm1pq2oHvdbQyevtYfc-34FQ';
 
@@ -260,6 +261,7 @@ const Bridge = ({ options, customStyles }) => {
 
       console.log('Transaction MADE:', result);
       // suscribe to push notif for that transaction
+      console.log(data.ref_num);
       const subscription = await subscribeUser(data.ref_num);
       if (subscription) {
         console.log('User subscribed:', subscription);
@@ -271,46 +273,56 @@ const Bridge = ({ options, customStyles }) => {
       }
       console.log('Transaction SUCCESFUL');
       setTransactionMessage("Transaction Successful!");
-      setTimeout(function() {
+      /*setTimeout(function() {
         location.reload();
-      }, 2000);
+      }, 2000); */
       setTransactionError('');
+    } catch (error) {
+      console.error('Error confirming transaction:', error);
+      setTransactionError('Error confirming transaction. Please try again.');
+      setTransactionMessage('');
+  }
+};
 
 
-
-  async function subscribeUser(refNum) {
+  const subscribeUser = async (refNum) => {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.register('/sw.js');
       const subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
       });
-
+  
       const subscriptionData = {
-          ref_num: refNum,
-          endpoint: subscription.endpoint,
-          keys: {
-              p256dh: arrayBufferToBase64(subscription.getKey('p256dh')),
-              auth: arrayBufferToBase64(subscription.getKey('auth'))
-          }
-      };
-
-      const subscribeResponse = await axios.post('http://localhost:3000/push/subscribe', {
         ref_num: refNum,
-        subscription: subscriptionData
-      }, {
+        endpoint: subscription.endpoint,
+        keys: {
+          p256dh: arrayBufferToBase64(subscription.getKey('p256dh')),
+          auth: arrayBufferToBase64(subscription.getKey('auth'))
+        }
+      };
+  
+      try {
+        const subscribeResponse = await axios.post('http://localhost:3000/push/subscribe', {
+          ref_num: refNum,
+          subscription: subscriptionData
+        }, {
           headers: {
-              'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tctoken')}`
           }
-      });
-
-      if (subscribeResponse.status === 200) {
-        console.log('User subscribed:', subscribeResponse.data);
-      } else {
+        });
+  
+        if (subscribeResponse.status === 200) {
+          console.log('User subscribed:', subscribeResponse.data);
+        } else {
           console.error('Error subscribing user:', subscribeResponse.data);
+        }
+      } catch (error) {
+        console.error('Error subscribing user:', error);
       }
     }
-  }
+  };
 
 
   function arrayBufferToBase64(buffer) {
