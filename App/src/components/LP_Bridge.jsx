@@ -23,7 +23,7 @@ const tiers = [
   'Titan'
 ];
 
-const multipliers = [1, 1.2, 1.5, 1.7, 2, 2.5, 3, 3.5, 4]; // Example multipliers for each tier
+const multipliers = [1, 1.2, 1.5, 1.7, 2, 2.5, 3, 3.5, 4]; //  multipliers for each tier
 
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
@@ -124,9 +124,9 @@ const Bridge = ({ options, customStyles }) => {
   const handleInputChange2 = (e) => {
     const value = e.target.value;
     // Use regex to allow only valid numbers and prevent non-numeric input like 'e'
-    if (/^(?!0(?!$))(?=.*\d)^\d*\.?\d*$/.test(value)) {
+    if (/^(?!0(?!$))(?=.*\d)^\d*$/.test(value)) {
       const numericValue = parseFloat(value);
-
+    
       if (numericValue > points) {
         setInputValue2('');
         setSubmitTransaction(false);
