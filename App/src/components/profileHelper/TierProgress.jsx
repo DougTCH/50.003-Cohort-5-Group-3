@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import rewardIcon from '../../assets/GRAPHIC_ASSETS/GRAPHIC_GOLDEN_BONE_TIER.svg';
+import { getUserData } from '../../../utils/userdata';
 
 const tiers = [
   'Bronze',
@@ -13,10 +15,26 @@ const tiers = [
   'Titan'
 ];
 
-const TierProgress = ({ tasks = [], setGoldenBones, goldenBones }) => {
+
+const TierProgress = ({ tasks = [], setGoldenBones, goldenBones, userId }) => {
   const [currentPoints, setCurrentPoints] = useState(0);
   const [currentTierIndex, setCurrentTierIndex] = useState(0);
   const [unclaimedBones, setUnclaimedBones] = useState(0);
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    points: 0,
+    user_id: ''
+  });
+
+  useEffect(() => {
+    try {
+      const data = getUserData();
+      setUserData(data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  }, []); // Missing dependency array added
 
   useEffect(() => {
     const totalPoints = tasks.reduce((acc, task) => task.status === 'done' ? acc + task.points : acc, 0);
@@ -31,11 +49,24 @@ const TierProgress = ({ tasks = [], setGoldenBones, goldenBones }) => {
 
     if (newTierIndex > currentTierIndex) {
       setUnclaimedBones(prev => prev + (newTierIndex - currentTierIndex));
-    }
+      updateTier(userData.user_id, newTierIndex); // Call the API to update tier after calculating
 
+    }
     setCurrentPoints(newPoints);
     setCurrentTierIndex(newTierIndex);
-  }, [tasks, currentTierIndex]);
+  }, [tasks, currentTierIndex, userData.user_id]);
+
+  const updateTier = async (userId, newTier) => {
+    try {
+      await axios.post(`http://localhost:5001/api/update_tier/${userId}`, 
+      { newTier });
+      console.log('Tier updated successfully');
+      sessionStorage.setItem('tier', newTier);
+      console.log("tier is :", sessionStorage.getItem('tier'));
+    } catch (error) {
+      console.error('Error updating tier:', error);
+    }
+  };
 
   const progressPercentage = (currentPoints / 100) * 100;
 
@@ -45,6 +76,15 @@ const TierProgress = ({ tasks = [], setGoldenBones, goldenBones }) => {
       setUnclaimedBones(unclaimedBones - 1);
     }
   };
+  const resetTier = () => {
+    sessionStorage.setItem('tier', 0);
+    console.log("tier is :", sessionStorage.getItem('tier'));
+
+  }
+
+
+  
+  
 
   return (
     <div className="tier-info">
@@ -61,8 +101,11 @@ const TierProgress = ({ tasks = [], setGoldenBones, goldenBones }) => {
         )}
         <div className="reward-details">
           <p>Reward for completing this tier: <span>1x Golden Bone</span></p>
-          <button className="claim-button" onClick={handleClaim} disabled={unclaimedBones === 0}>
+          <button className="claim-button" onClick={resetTier} disabled={unclaimedBones === 0}>
             CLAIM
+          </button>
+          <button onClick={resetTier}>
+            Reset Tier
           </button>
         </div>
         {unclaimedBones > 0 && (

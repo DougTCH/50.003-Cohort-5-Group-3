@@ -137,3 +137,15 @@ a.active::after {
     transform: translateX(-50%);
     border-radius: 5px;
 }
+
+.Notification_Button.disabled,
+.Profile.disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.Notification_Button.disabled .Notification_Icon,
+.Profile.disabled .Profile_Icon {
+    opacity: 0.8;
+    cursor: not-allowed;
+}

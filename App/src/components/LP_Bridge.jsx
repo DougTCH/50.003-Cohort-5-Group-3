@@ -6,8 +6,24 @@ import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
 import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
+import axios from 'axios';
+import { createSearchParams } from 'react-router-dom';
 
-Modal.setAppElement('#root'); // Accessibility setting for the modal
+const publicVapidKey = 'BP_9uRZDQD-6I_BQAmLVYRMIw3FG-oQohuRXAwXX924yysDAEXBHrstsr--5GeEDm1pq2oHvdbQyevtYfc-34FQ';
+
+const tiers = [
+  'Bronze',
+  'Silver',
+  'Gold',
+  'Platinum',
+  'Emerald',
+  'Diamond',
+  'Conqueror',
+  'Vanguard',
+  'Titan'
+];
+
+const multipliers = [1, 1.2, 1.5, 1.7, 2, 2.5, 3, 3.5, 4]; // Example multipliers for each tier
 
 const Bridge = ({ options, customStyles }) => {
   const [loyaltyPrograms, setLoyaltyPrograms] = useState([]);
@@ -23,12 +39,16 @@ const Bridge = ({ options, customStyles }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [points, setPoints] = useState(0);
   const [alertShown, setAlertShown] = useState(false); // New state for tracking alert display
+  const [transactionMessage, setTransactionMessage] = useState(''); // New state for transaction messages
+  const [transactionError, setTransactionError] = useState(''); // New state for transaction errors
 
   const [userData, setUserData] = useState({
+    email: '',
     firstName: '',
     lastName: '',
     points: 0,
     user_id: '',
+    tier: 0, // Ensure tier is part of userData
   });
 
   const generateRefNum = () => {
@@ -85,6 +105,8 @@ const Bridge = ({ options, customStyles }) => {
     setInputError('');
     setSubmitTransaction(false);
     setAlertShown(false); // Reset alert state on new selection
+    setTransactionMessage('');
+    setTransactionError('');
     if (option) {
       const selectedProgram = loyaltyPrograms.find(program => program.pid === option.value);
       if (selectedProgram && selectedProgram.member_format) {
@@ -104,29 +126,22 @@ const Bridge = ({ options, customStyles }) => {
     // Use regex to allow only valid numbers and prevent non-numeric input like 'e'
     if (/^(?!0(?!$))(?=.*\d)^\d*\.?\d*$/.test(value)) {
       const numericValue = parseFloat(value);
-      
+
       if (numericValue > points) {
         setInputValue2('');
         setSubmitTransaction(false);
-        if (!alertShown) { // Show alert only once
-          alert("Invalid Amount: Exceeds available points.");
-          setAlertShown(true);
-        }
+        setTransactionError("Invalid Amount: Exceeds available points.");
       } else {
         setInputValue2(value);
         setSubmitTransaction(value !== '');
-        setAlertShown(false); // Reset alert state on valid input
+        setTransactionError(''); // Clear the error state on valid input
       }
     } else {
       setInputValue2('');
       setSubmitTransaction(false);
-      if (!alertShown) { // Show alert only once
-        alert("Invalid Amount: Please enter a valid number.");
-        setAlertShown(true);
-      }
+      setTransactionError("Invalid Amount: Please enter a valid number.");
     }
   };
-  
 
   const handleInputSubmit = (inputId) => {
     if (inputId === 'memIdBox') {
@@ -140,10 +155,7 @@ const Bridge = ({ options, customStyles }) => {
       if (!isNaN(inputValue2) && inputValue2 > 0) {
         // Proceed with the transaction logic
       } else {
-        if (!alertShown) { // Ensure alert only shown once
-          alert("Invalid Amount");
-          setAlertShown(true);
-        }
+        setTransactionError("Invalid Amount");
       }
     }
   };
@@ -176,6 +188,7 @@ const Bridge = ({ options, customStyles }) => {
   const handleMaxClick = () => {
     setInputValue2(points.toString());
     setSubmitTransaction(true);
+    setTransactionError(''); // Clear the error state when Max is clicked
   };
 
   const selectOptions = loyaltyPrograms.map(program => ({
@@ -198,41 +211,41 @@ const Bridge = ({ options, customStyles }) => {
   );
 
   const handleConfirmTransaction = async () => {
-    // for now set session data of points to new points
-    // sessionStorage.setItem('points', userData.points - parseInt(inputValue2, 10));
-    const newPoints = points - parseInt(inputValue2, 10);
+    const pointsToTransfer = parseInt(inputValue2, 10);
+    const userMultiplier = multipliers[userData.tier] || 1;
+    const conversion = selectedOption.conversion;
+    const newPoints = points - pointsToTransfer;
+    const adjustedPoints = Math.round(pointsToTransfer * userMultiplier * conversion) ;
+
     setPoints(newPoints);
-    updateUserPoints(userData.user_id, newPoints);
-
-    const formatDateToDDMMYY = (date) => {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = String(date.getFullYear());
-      return `${day}${month}${year}`;
-    };
-
-    const transaction_date = formatDateToDDMMYY(new Date());
-
-    const data = {
-      "app_id": "CITY_BANK",
-      "loyalty_pid": selectedOption ? selectedOption.label : "any",
-      "user_id": userData.user_id,
-      "member_id": inputValue1,
-      "member_first": userData.firstName,
-      "member_last": userData.lastName,
-      "transaction_date": transaction_date,
-      "ref_num": generateRefNum(),
-      "amount": inputValue2,
-      "additional_info": "any",
-    };
-    console.log('sending transaction data', data);
-
+    
     try {
-      // Assuming the token is stored in sessionStorage
-      const token = sessionStorage.getItem('tctoken');
-      if (!token) {
-        throw new Error("User is not authenticated. Please log in.");
-      }
+
+      // Update points in the backend
+      await updateUserPoints(userData.user_id, newPoints);
+
+      const formatDateToDDMMYY = (date) => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear());
+        return `${year}${month}${day}`;
+      };
+
+      const transaction_date = formatDateToDDMMYY(new Date());
+
+      const data = {
+        "app_id": "FETCH",
+        "loyalty_pid": selectedOption ? selectedOption.value : "any",
+        "user_id": userData.user_id,
+        "member_id": inputValue1,
+        "member_first": userData.firstName,
+        "member_last": userData.lastName,
+        "transaction_date": transaction_date,
+        "ref_num": generateRefNum(),
+        "amount": adjustedPoints,
+        "additional_info": "any",
+      };
+      console.log('sending transaction data', data);
 
       const result = await sendTransaction(
         data.app_id,
@@ -247,13 +260,89 @@ const Bridge = ({ options, customStyles }) => {
         data.additional_info,
       );
 
-      console.log('Transaction successful:', result);
-      alert("Transaction Successful!");
-      window.location.reload();
+      console.log('Transaction MADE:', result);
+      // suscribe to push notif for that transaction
+      console.log(data.ref_num);
+      const subscription = await subscribeUser(data.ref_num);
+      if (subscription) {
+        console.log('User subscribed:', subscription);
+      }
+      //notif response
+    
+      console.log('Transaction SUCCESFUL');
+      setTransactionMessage("Transaction Successful!");
+      /*setTimeout(function() {
+        location.reload();
+      }, 2000); */
+      setTransactionError('');
     } catch (error) {
       console.error('Error confirming transaction:', error);
+      setTransactionError('Error confirming transaction. Please try again.');
+      setTransactionMessage('');
+  }
+};
+
+
+  const subscribeUser = async (refNum) => {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+      });
+  
+      const subscriptionData = {
+        ref_num: refNum,
+        endpoint: subscription.endpoint,
+        keys: {
+          p256dh: arrayBufferToBase64(subscription.getKey('p256dh')),
+          auth: arrayBufferToBase64(subscription.getKey('auth'))
+        }
+      };
+  
+      try {
+        const subscribeResponse = await axios.post('http://localhost:3000/push/subscribe', {
+          ref_num: refNum,
+          subscription: subscriptionData
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tctoken')}`
+          }
+        });
+  
+        if (subscribeResponse.status === 201) {
+          console.log('User subscribed:', subscribeResponse.data);
+        } else {
+          console.error('Error subscribing user:', subscribeResponse.data);
+        }
+      } catch (error) {
+        console.error('Error subscribing user:', error);
+      }
     }
   };
+
+
+  function arrayBufferToBase64(buffer) {
+    const binary = String.fromCharCode.apply(null, new Uint8Array(buffer));
+    return btoa(binary);
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+          outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+  }
+
+
+
+  
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -320,7 +409,6 @@ const Bridge = ({ options, customStyles }) => {
                 />
                 <p className="fetch-points">FETCH Points</p>
                 <button type="button" id="Max" onClick={handleMaxClick}>Max</button>
-
               </div>
             </>
           )}
@@ -338,12 +426,17 @@ const Bridge = ({ options, customStyles }) => {
                   <p>To: {selectedOption ? selectedOption.label : ''} (+{inputValue2 * selectedOption.conversion} {selectedOption.currency})</p>
                   <p>Conversion Rate: 1 FETCH = {selectedOption.conversion} {selectedOption.currency}</p>
                   <p>Account Balance: {(points - parseInt(inputValue2, 10) || 0)} FETCH Points</p>
+                  <p>Tier: {tiers[userData.tier]} (Multiplier: x{multipliers[userData.tier]})</p>
+
+                  <p> Final Amount : {Math.round(inputValue2 * selectedOption.conversion * multipliers[userData.tier])} {selectedOption.currency} </p>
                 </div>
               </Collapsible>
               <button type="button" className="confirm-transaction-button" onClick={handleConfirmTransaction}>Confirm Transaction</button>
-              <p>All transfers are final. </p>
+              <p>All transfers are final.</p>
             </>
           )}
+          {transactionMessage && <p className="transaction-message">{transactionMessage}</p>}
+          {transactionError && <p className="transaction-error">{transactionError}</p>}
         </div>
       )}
       <Modal
@@ -351,6 +444,7 @@ const Bridge = ({ options, customStyles }) => {
         onRequestClose={closeModal}
         contentLabel="Loyalty Program Information"
         className="modal"
+        appElement={document.getElementById('root')}
         overlayClassName="modal-overlay"
       >
         {selectedOption && (
@@ -358,13 +452,13 @@ const Bridge = ({ options, customStyles }) => {
             <h2>{selectedOption.label} Information</h2>
             <p>Description: {selectedOption.description || 'No description available.'}</p>
             <p>Processing Time: {selectedOption.process_time || 'N/A'}</p>
+            <p>Conversion Rate: 1 FETCH = {selectedOption.conversion} {selectedOption.currency}</p>
             <a href={selectedOption.enrol_link} target="_blank" rel="noopener noreferrer">Register Here</a>
             <a href={selectedOption.terms} target="_blank" rel="noopener noreferrer"> Terms and Conditions</a>
 
             <button onClick={closeModal} className="close-button">Close</button>
           </>
         )}
-
       </Modal>
     </section>
   );

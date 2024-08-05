@@ -1,25 +1,86 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './dashboard.css';
-import defaultProfilePicture from '../../assets/FETCH_LOGOS/FETCH_LOGO_MAIN.svg';
+import AdminDetails from './AdminDetails';
+import SystemDetails from './SystemDetails';
+import VouchersPromotions from './VouchersPromotions';
+import ExecutiveControls from './ExecutiveControls';
+import { getUserData } from '../../../utils/userdata';
 
-const Profile = () => {
+const Dashboard = () => {
+  const [vouchers, setVouchers] = useState([
+    {
+      id: 1,
+      description: 'Fast Fruits Promotion',
+      boost: '2x Points Conversion Rate',
+      duration: 'NIL',
+      status: 'live',
+    },
+    {
+      id: 2,
+      description: 'Limited Time Offer for Royal Air Members',
+      boost: '2x Points Conversion Rate',
+      duration: 'Ends 4 AUG 2359HRS',
+      status: 'pending',
+    },
+    {
+      id: 3,
+      description: 'Gold RUSH Competition: GOLDEN TICKET',
+      boost: '2x Points Conversion Rate',
+      duration: 'NIL',
+      status: 'pending',
+    },
+  ]);
+
+  const [userData, setUserData] = useState({
+    email: '',
+  });
+
+  const [showExecutiveControls, setShowExecutiveControls] = useState(true);
+
+  useEffect(() => {
+    const data = getUserData();
+    setUserData(data);
+  }, []);
+
+  const handlePost = (voucherId) => {
+    setVouchers(vouchers.map(voucher =>
+      voucher.id === voucherId ? { ...voucher, status: 'live' } : voucher
+    ));
+  };
+
+  const handleDelete = (voucherId) => {
+    setVouchers(vouchers.filter(voucher => voucher.id !== voucherId));
+  };
+
+  const handleAddVoucher = (newVoucher) => {
+    const newId = Date.now(); // Use current timestamp as a unique ID
+    setVouchers([...vouchers, { id: newId, ...newVoucher }]);
+  };
+
+  const toggleExecutiveControls = () => {
+    setShowExecutiveControls(!showExecutiveControls);
+  };
+
   return (
-    <div className="profile-container">
-      <div className="profile-header">
-        <h1>Profile</h1>
-      </div>
-      <div className="profile-content">
-        <div className="profile-picture">
-          <img src={defaultProfilePicture} alt="Profile" />
+    <div className="dashboard-container">
+      <div className="dashboard-content">
+        <div className="dashboard-top">
+          <AdminDetails />
+          <SystemDetails />
         </div>
-        <div className="profile-details">
-          <h2>I'M HIM</h2>
-          <p>Email: john.doe@example.com</p>
-          <button className="edit-profile-button">Edit Profile</button>
-        </div>
+        <VouchersPromotions
+          vouchers={vouchers}
+          handlePost={handlePost}
+          handleDelete={handleDelete}
+          handleAddVoucher={handleAddVoucher}
+        />
+        <button onClick={toggleExecutiveControls}>
+          {showExecutiveControls ? 'Hide Executive Controls' : 'Show Executive Controls'}
+        </button>
+        {showExecutiveControls && <ExecutiveControls />}
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default Dashboard;
