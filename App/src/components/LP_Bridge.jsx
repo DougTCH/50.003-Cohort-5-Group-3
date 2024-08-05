@@ -206,67 +206,68 @@ const Bridge = ({ options, customStyles }) => {
   );
 
   const handleConfirmTransaction = async () => {
-    // for now set session data of points to new points
     const pointsToTransfer = parseInt(inputValue2, 10);
-    const userMultiplier = multipliers[userData.tier] || 1; // Get multiplier based on user's tier
-    const conversion = selectedOption.conversion; 
+    const userMultiplier = multipliers[userData.tier] || 1;
+    const conversion = selectedOption.conversion;
     const newPoints = points - pointsToTransfer;
-    const adjustedPoints = pointsToTransfer * userMultiplier*conversion;
+    const adjustedPoints = Math.round(pointsToTransfer * userMultiplier * conversion) ;
 
     setPoints(newPoints);
     
     try {
-      // Update points in the backend
-      await updateUserPoints(userData.user_id, newPoints);
+        const formatDateToDDMMYY = (date) => {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear());
+            return `${year}${month}${day}`;
+        };
 
-      const formatDateToDDMMYY = (date) => {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear());
-        return `${year}${month}${day}`;
-      };
+        const transaction_date = formatDateToDDMMYY(new Date());
 
-      const transaction_date = formatDateToDDMMYY(new Date());
+        const data = {
+            "app_id": "CITY_BANK",
+            "loyalty_pid": selectedOption ? selectedOption.label : "any",
+            "user_id": userData.user_id,
+            "member_id": inputValue1,
+            "member_first": userData.firstName,
+            "member_last": userData.lastName,
+            "transaction_date": transaction_date,
+            "ref_num": generateRefNum(),
+            "amount": adjustedPoints,
+            "additional_info": "any",
+        };
+        console.log('Sending transaction data:', data);
 
-      const data = {
-        "app_id": "CITY_BANK",
-        "loyalty_pid": selectedOption ? selectedOption.label : "any",
-        "user_id": userData.user_id,
-        "member_id": inputValue1,
-        "member_first": userData.firstName,
-        "member_last": userData.lastName,
-        "transaction_date": transaction_date,
-        "ref_num": generateRefNum(),
-        "amount": adjustedPoints,
-        "additional_info": "any",
-      };
-      console.log('sending transaction data', data);
+        const result = await sendTransaction(
+            data.app_id,
+            data.loyalty_pid,
+            data.user_id,
+            data.member_id,
+            data.member_first,
+            data.member_last,
+            data.transaction_date,
+            data.ref_num,
+            data.amount,
+            data.additional_info,
+        );
 
-      const result = await sendTransaction(
-        data.app_id,
-        data.loyalty_pid,
-        data.user_id,
-        data.member_id,
-        data.member_first,
-        data.member_last,
-        data.transaction_date,
-        data.ref_num,
-        data.amount,
-        data.additional_info,
-      );
+        console.log('Transaction successful:', result);
+        setTransactionMessage("Transaction Successful!");
 
-      console.log('Transaction successful:', result);
-      setTransactionMessage("Transaction Successful!");
-      setTimeout(function() {
-        location.reload();
-      }, 2000);
-      setTransactionError('');
+        const updateResult = await updateUserPoints(userData.user_id, newPoints);
+        console.log('Points update result:', updateResult);
+
+        setTransactionError('');
     } catch (error) {
-      console.error('Error confirming transaction:', error);
-      setTransactionError('Error confirming transaction. Please try again.');
-      setTransactionMessage('');
+        console.error('Error confirming transaction:', error);
+        setTransactionError('Error confirming transaction. Please try again.');
+        setTransactionMessage('');
     }
-  };
+};
+      /*setTimeout(function() {
+        location.reload();
+      }, 2000); */
+
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);

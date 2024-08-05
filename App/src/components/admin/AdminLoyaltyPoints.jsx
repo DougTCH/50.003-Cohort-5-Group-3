@@ -19,6 +19,9 @@ const AdminLoyaltyPoints = () => {
       const pending = await fetchAllPendingTransactions();
       const processed = await fetchAllProcessedTransactions();
       const deleteReqs = await fetchAllDeleteRequests();
+      console.log('delete transactions', deleteReqs); // Check the fetched data here
+      deleteReqs.forEach(req => req.status = 'DeleteRequest'); // Ensure each delete request has the status
+
       setPendingTransactions(pending);
       setProcessedTransactions(processed);
       setDeleteRequests(deleteReqs);
@@ -26,6 +29,7 @@ const AdminLoyaltyPoints = () => {
     };
     fetchAndSetTransactions();
   }, []);
+  
 
   useEffect(() => {
     const checkForNewTransactions = () => {
@@ -65,7 +69,7 @@ const AdminLoyaltyPoints = () => {
     } catch (error) {
       console.error('Error deleting transaction:', error);
     }
-  };
+  };  
 
   const filteredTransactions = transactions.filter((transaction) => {
     if (selectedFilter === 'All') return true;
@@ -74,6 +78,7 @@ const AdminLoyaltyPoints = () => {
     if (selectedFilter === 'DeleteRequests') return transaction.status === 'DeleteRequest';
     return true;
   });
+  console.log('Filtered transactions:', filteredTransactions);
 
   const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)
@@ -82,6 +87,8 @@ const AdminLoyaltyPoints = () => {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
   const currentTransactions = sortedTransactions.slice(startIndex, endIndex);
+console.log('Current transactions to display:', currentTransactions);
+
 
   const handlePageChange = (newPage) => {
     setPage(newPage);

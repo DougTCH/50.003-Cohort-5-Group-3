@@ -207,18 +207,23 @@ const fetchAllUsers = async () => {
     throw error;
   }
 };
+
+
 const updateUserPoints = async (userId, newPoints) => {
   try {
-    const response = await axios.post(`${API_URL}/update_points/${userId}`, { newPoints }, {
-   
-    });
-    console.log('Points updated successfully:', response.data);
-    return response.data;
+      console.log(`Sending request to update points for user: ${userId}, new points: ${newPoints}`);
+      const response = await axios.post(`${API_URL}/update_points/${userId}`, { newPoints }, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+      });
+      console.log('Response from update points:', response.data);
+      return response.data;
   } catch (error) {
-    console.error('Error updating points:', error.response?.data || error.message);
-    throw error;
+      console.error('Error updating points:', error.response?.data || error.message);
+      throw error;
   }
 };
+
+
 const fetchAllPendingTransactions = async () => {
   try {
     const token = sessionStorage.getItem('tctoken');
@@ -255,18 +260,11 @@ const fetchAllProcessedTransactions = async () => {
 
 const fetchAllDeleteRequests = async () => {
   try {
-    const token = sessionStorage.getItem('tctoken');
-    if (!token) {
-      throw new Error('No token found in sessionStorage');
-    }
-
-    const response = await axios.get(`${API_URL}/transact/obtain_record/delete_requests_all`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const response = await axios.get(`${API_URL}/obtain_record/delete_requests_all`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching delete requests:', error.response ? error.response.data : error.message);
-    return [];
+    console.error('Error fetching delete requests:', error);
+    throw error;
   }
 };
 
@@ -289,7 +287,7 @@ const deleteTransactionById = async (t_id) => {
 
 const submitDeleteRequest = async (transactionIds, userId) => {
   try {
-    const response = await axios.post(`${API_URL}/transact/submit_delete_request`, {
+    const response = await axios.post(`${API_URL}/submit_delete_request`, {
       transactionIds,
       userId
     }, {
@@ -299,6 +297,18 @@ const submitDeleteRequest = async (transactionIds, userId) => {
     return response.data;
   } catch (error) {
     console.error('Error in submitDeleteRequest:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export const fetchTransactionByRefNum = async (refNum) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/transact/obtain_record/by_ref_num/${refNum}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching transaction by reference number:', error);
     throw error;
   }
 };
