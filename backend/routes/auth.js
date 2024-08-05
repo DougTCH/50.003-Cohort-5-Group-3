@@ -149,7 +149,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-router.post('/update_points/:userId', async (req, res) => {
+router.post('/admin_update_points/:userId', async (req, res) => {
   const { userId } = req.params;
   const { tierPoints = 0, bankPoints = 0, voucherInjections = 0 } = req.body.newPoints || {};
 
