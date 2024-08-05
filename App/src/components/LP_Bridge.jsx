@@ -209,37 +209,38 @@ const Bridge = ({ options, customStyles }) => {
     // for now set session data of points to new points
     const pointsToTransfer = parseInt(inputValue2, 10);
     const userMultiplier = multipliers[userData.tier] || 1; // Get multiplier based on user's tier
+    const conversion = selectedOption.conversion; 
     const newPoints = points - pointsToTransfer;
-    const adjustedPoints = pointsToTransfer * userMultiplier;
+    const adjustedPoints = pointsToTransfer * userMultiplier*conversion;
 
     setPoints(newPoints);
-    updateUserPoints(userData.user_id, newPoints);
-
-    const formatDateToDDMMYY = (date) => {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = String(date.getFullYear());
-      return `${day}${month}${year}`;
-    };
-
-    const transaction_date = formatDateToDDMMYY(new Date());
-
-    const data = {
-      "app_id": "CITY_BANK",
-      "loyalty_pid": selectedOption ? selectedOption.label : "any",
-      "user_id": userData.user_id,
-      "member_id": inputValue1,
-      "member_first": userData.firstName,
-      "member_last": userData.lastName,
-      "transaction_date": transaction_date,
-      "ref_num": generateRefNum(),
-      "amount": adjustedPoints,
-      "additional_info": "any",
-    };
-    console.log('sending transaction data', data);
-
+    
     try {
-      // Assuming the token is stored in sessionStorage
+      // Update points in the backend
+      await updateUserPoints(userData.user_id, newPoints);
+
+      const formatDateToDDMMYY = (date) => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear());
+        return `${year}${month}${day}`;
+      };
+
+      const transaction_date = formatDateToDDMMYY(new Date());
+
+      const data = {
+        "app_id": "CITY_BANK",
+        "loyalty_pid": selectedOption ? selectedOption.label : "any",
+        "user_id": userData.user_id,
+        "member_id": inputValue1,
+        "member_first": userData.firstName,
+        "member_last": userData.lastName,
+        "transaction_date": transaction_date,
+        "ref_num": generateRefNum(),
+        "amount": adjustedPoints,
+        "additional_info": "any",
+      };
+      console.log('sending transaction data', data);
 
       const result = await sendTransaction(
         data.app_id,
@@ -258,7 +259,7 @@ const Bridge = ({ options, customStyles }) => {
       setTransactionMessage("Transaction Successful!");
       setTimeout(function() {
         location.reload();
-    }, 2000);
+      }, 2000);
       setTransactionError('');
     } catch (error) {
       console.error('Error confirming transaction:', error);
@@ -351,7 +352,7 @@ const Bridge = ({ options, customStyles }) => {
                   <p>Account Balance: {(points - parseInt(inputValue2, 10) || 0)} FETCH Points</p>
                   <p>Tier: {tiers[userData.tier]} (Multiplier: x{multipliers[userData.tier]})</p>
 
-                  <p> Final Amount : {inputValue2 * selectedOption.conversion * multipliers[userData.tier]} {selectedOption.currency} </p>
+                  <p> Final Amount : {Math.round(inputValue2 * selectedOption.conversion * multipliers[userData.tier])} {selectedOption.currency} </p>
                 </div>
               </Collapsible>
               <button type="button" className="confirm-transaction-button" onClick={handleConfirmTransaction}>Confirm Transaction</button>

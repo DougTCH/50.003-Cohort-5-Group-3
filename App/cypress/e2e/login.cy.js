@@ -4,13 +4,13 @@ describe('Login Flow', () => {
   });
 
   it('renders the login page correctly', () => {
-    cy.get('input[placeholder="Username"]').should('exist');
+    cy.get('input[placeholder="Email"]').should('exist');
     cy.get('input[placeholder="Password"]').should('exist');
     cy.get('button.login-button').should('exist');
   });
 
   it('shows error on invalid login', () => {
-    cy.get('input[placeholder="Username"]').type('wronguser@gmail.com');
+    cy.get('input[placeholder="Email"]').type('wronguser@gmail.com');
     cy.get('input[placeholder="Password"]').type('wrongpass');
     cy.intercept('POST', 'http://localhost:5001/api/login', {
       statusCode: 401,
@@ -36,7 +36,7 @@ describe('Login Flow', () => {
       body: { token: 'tcMockToken' },
     }).as('tcLoginRequest');
 
-    cy.get('input[placeholder="Username"]').type('john.doe@gmail.com');
+    cy.get('input[placeholder="Email"]').type('john.doe@gmail.com');
     cy.get('input[placeholder="Password"]').type('password123!@#');
     cy.get('button.login-button').click();
 
@@ -67,7 +67,7 @@ describe('Login Flow', () => {
       body: { token: 'tcMockToken' },
     }).as('tcLoginRequest');
 
-    cy.get('input[placeholder="Username"]').type('john.doe@gmail.com');
+    cy.get('input[placeholder="Email"]').type('john.doe@gmail.com');
     cy.get('input[placeholder="Password"]').type('password123!@#');
     cy.get('button.login-button').click();
 
@@ -82,6 +82,6 @@ describe('Login Flow', () => {
     cy.get('button.Logout').click(); // Assuming the logout button has this class
 
     cy.url().should('eq', Cypress.config().baseUrl + '/login'); // Check if redirected to login
-    cy.get('input[placeholder="Username"]').should('exist');
+    cy.get('input[placeholder="Email"]').should('exist');
   });
 });

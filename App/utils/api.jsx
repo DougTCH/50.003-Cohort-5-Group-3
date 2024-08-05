@@ -207,20 +207,18 @@ const fetchAllUsers = async () => {
     throw error;
   }
 };
-
 const updateUserPoints = async (userId, newPoints) => {
-  
   try {
     const response = await axios.post(`${API_URL}/update_points/${userId}`, { newPoints }, {
-      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+   
     });
+    console.log('Points updated successfully:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error updating points:', error.response?.data || error.message);
     throw error;
   }
 };
-
 const fetchAllPendingTransactions = async () => {
   try {
     const token = sessionStorage.getItem('tctoken');
@@ -295,7 +293,7 @@ const submitDeleteRequest = async (transactionIds, userId) => {
       transactionIds,
       userId
     }, {
-      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    
     });
 
     return response.data;

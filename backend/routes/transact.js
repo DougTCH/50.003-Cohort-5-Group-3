@@ -54,6 +54,7 @@ router.post('/update_points/:userId', async (req, res) => {
         // response
         res.json({ message: 'Points updated successfully', user });
     } catch (error) {
+
         console.error('Error fetching user points:', error);
         res.status(500).json({message: 'Server error'});
     }

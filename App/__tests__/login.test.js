@@ -22,7 +22,7 @@ describe('Login Component', () => {
       </Router>
     );
 
-    expect(getByPlaceholderText('Username')).toBeInTheDocument();
+    expect(getByPlaceholderText('Email')).toBeInTheDocument();
     expect(getByPlaceholderText('Password')).toBeInTheDocument();
     expect(getByText("Let's Go")).toBeInTheDocument();
   });
@@ -36,7 +36,7 @@ describe('Login Component', () => {
       </Router>
     );
 
-    fireEvent.change(getByPlaceholderText('Username'), { target: { value: 'wronguser@gmail.com' } });
+    fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'wronguser@gmail.com' } });
     fireEvent.change(getByPlaceholderText('Password'), { target: { value: 'wrongpass' } });
     fireEvent.click(getByText("Let's Go"));
 
@@ -58,7 +58,7 @@ describe('Login Component', () => {
       </Router>
     );
 
-    fireEvent.change(getByPlaceholderText('Username'), { target: { value: 'john.doe@gmail.com' } });
+    fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'john.doe@gmail.com' } });
     fireEvent.change(getByPlaceholderText('Password'), { target: { value: 'password123' } });
     fireEvent.click(getByText("Let's Go"));
 
@@ -109,7 +109,7 @@ describe('Login Component', () => {
       </Router>
     );
 
-    const emailInput = getByPlaceholderText('Username');
+    const emailInput = getByPlaceholderText('Email');
     fireEvent.change(emailInput, { target: { value: 'invalidEmail' } });
     fireEvent.blur(emailInput); // Trigger HTML5 validation
 

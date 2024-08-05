@@ -19,7 +19,7 @@ describe('Transaction Flow', () => {
     }).as('tcLoginRequest');
 
     // Perform login
-    cy.get('input[placeholder="Username"]').type('john.doe@gmail.com');
+    cy.get('input[placeholder="Email"]').type('john.doe@gmail.com');
     cy.get('input[placeholder="Password"]').type('password123!@#');
     cy.get('button.login-button').click();
 
