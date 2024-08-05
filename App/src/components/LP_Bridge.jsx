@@ -209,16 +209,16 @@ const Bridge = ({ options, customStyles }) => {
   );
 
   const handleConfirmTransaction = async () => {
-    // for now set session data of points to new points
     const pointsToTransfer = parseInt(inputValue2, 10);
-    const userMultiplier = multipliers[userData.tier] || 1; // Get multiplier based on user's tier
-    const conversion = selectedOption.conversion; 
+    const userMultiplier = multipliers[userData.tier] || 1;
+    const conversion = selectedOption.conversion;
     const newPoints = points - pointsToTransfer;
-    const adjustedPoints = pointsToTransfer * userMultiplier*conversion;
+    const adjustedPoints = Math.round(pointsToTransfer * userMultiplier * conversion) ;
 
     setPoints(newPoints);
     
     try {
+
       // Update points in the backend
       await updateUserPoints(userData.user_id, newPoints);
 
@@ -275,12 +275,8 @@ const Bridge = ({ options, customStyles }) => {
         location.reload();
       }, 2000);
       setTransactionError('');
-    } catch (error) {
-      console.error('Error confirming transaction:', error);
-      setTransactionError('Error confirming transaction. Please try again.');
-      setTransactionMessage('');
-    }
-  };
+
+
 
   async function subscribeUser(refNum) {
     if ('serviceWorker' in navigator) {
