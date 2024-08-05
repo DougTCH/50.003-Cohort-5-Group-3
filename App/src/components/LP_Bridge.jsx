@@ -4,7 +4,7 @@ import Collapsible from 'react-collapsible';
 import Modal from 'react-modal';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, notifyServer } from '../../utils/api.jsx';
+import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
 import axios from 'axios';
 import { createSearchParams } from 'react-router-dom';
@@ -43,6 +43,7 @@ const Bridge = ({ options, customStyles }) => {
   const [transactionError, setTransactionError] = useState(''); // New state for transaction errors
 
   const [userData, setUserData] = useState({
+    email: '',
     firstName: '',
     lastName: '',
     points: 0,
@@ -267,10 +268,7 @@ const Bridge = ({ options, customStyles }) => {
         console.log('User subscribed:', subscription);
       }
       //notif response
-      const notificationResponse = await notifyServer(data.ref_num);
-      if (notificationResponse) {
-        console.log('Notification response:', notificationResponse);
-      }
+    
       console.log('Transaction SUCCESFUL');
       setTransactionMessage("Transaction Successful!");
       /*setTimeout(function() {
@@ -313,7 +311,7 @@ const Bridge = ({ options, customStyles }) => {
           }
         });
   
-        if (subscribeResponse.status === 200) {
+        if (subscribeResponse.status === 201) {
           console.log('User subscribed:', subscribeResponse.data);
         } else {
           console.error('Error subscribing user:', subscribeResponse.data);

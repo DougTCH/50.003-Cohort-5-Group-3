@@ -92,25 +92,7 @@ const fetchTransactions = async (user_id) => {
   }
 };
 
-const notifyServer = async (ref_num) => {
-  try {
-    const response = await axios.post(`http://localhost:3000/push/notify/${ref_num}`, {}, {
-      headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('tctoken')}`
-      }
-    });
-    if (response.status === 200) {
-      console.log('Notification response:', response.data);
-      return response.data;
-    } else {
-      console.error('Error in notification response:', response.data);
-      return null;
-    }
-  } catch (error) {
-    console.error('Error sending notification:', error);
-    return null;
-  }
-};
+
 
 
 const sendTransaction = async (
@@ -352,5 +334,4 @@ export {
   fetchAllDeleteRequests,
   deleteTransactionById,
   submitDeleteRequest,
-  notifyServer
 };

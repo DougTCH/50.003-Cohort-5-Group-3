@@ -4,6 +4,7 @@ export const getUserData = () => {
   const lastName = sessionStorage.getItem('lastName');
   const points = sessionStorage.getItem('points');
   const user_id = sessionStorage.getItem('id');
+  const email = sessionStorage.getItem('email');
   const mobileNumber = sessionStorage.getItem('mobileNumber');
   const tier = sessionStorage.getItem('tier');
   const membershipIDs = JSON.parse(sessionStorage.getItem('membershipIDs')) || [];
@@ -18,6 +19,7 @@ export const getUserData = () => {
     tier: tier ? parseInt(tier, 10) : 0,
     membershipIDs,
     vouchers,
+    email: email || '',
   };
 };
   
