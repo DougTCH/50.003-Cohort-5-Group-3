@@ -318,6 +318,21 @@ export const fetchTransactionByRefNum = async (refNum) => {
   }
 };
 
+// 6 Aug: remaining minor fixes: Naming clash with user's updateUserPoints
+const adminUpdatePoints = async (userId, newPoints) => {
+  try {
+    console.log(`Sending request to admin update points for user: ${userId}, new points: ${JSON.stringify(newPoints)}`);
+    const response = await axios.post(`${API_URL}/admin_update_points/${userId}`, { newPoints }, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('tctoken')}` }
+    });
+    console.log('Response from admin update points:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating points:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export { 
   login, 
   register, 
@@ -334,4 +349,5 @@ export {
   fetchAllDeleteRequests,
   deleteTransactionById,
   submitDeleteRequest,
+  adminUpdatePoints,
 };
