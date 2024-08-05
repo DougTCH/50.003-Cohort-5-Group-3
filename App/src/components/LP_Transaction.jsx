@@ -5,7 +5,7 @@ import { getUserData } from '../../utils/userdata';
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
-  const [processedTransactions, setProcessedTransactions] = useState([]);
+  const [deletableTransactions, setDeletableTransactions] = useState([]);
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -27,14 +27,8 @@ const Transaction = () => {
         const transactions = await fetchTransactions(userData.user_id);
         console.log(transactions);
         setTransactions(transactions);
-        const processed = transactions.filter(transaction => transaction.status === 'Processed');
-        setProcessedTransactions(processed.length > 0 ? processed : [{
-          transaction_date: '01012024',
-          t_id: 'default123',
-          loyalty_pid: 'Default Program',
-          amount: '100.00',
-          status: 'Processed'
-        }]); // Default processed transaction if none exist
+        const deletable = transactions.filter(transaction => transaction.status !== 'pending');
+        setDeletableTransactions(deletable);
       }
     };
     fetchAndSetTransactions();
@@ -52,6 +46,11 @@ const Transaction = () => {
       return `${day}/${month}/${year}`;
     }
     return dateStr;
+  };
+
+  const mapStatus = (status) => {
+    if (status === '0000') return 'Success';
+    return status;
   };
 
   const sortedTransactions = [...transactions].sort(
@@ -105,7 +104,7 @@ const Transaction = () => {
               <td>{transaction.t_id}</td>
               <td>{transaction.loyalty_pid}</td>
               <td>{transaction.amount}</td>
-              <td>{transaction.status}</td>
+              <td>{mapStatus(transaction.status)}</td>
             </tr>
           ))}
         </tbody>
@@ -139,7 +138,7 @@ const Transaction = () => {
                 </tr>
               </thead>
               <tbody>
-                {processedTransactions.map((transaction, index) => (
+                {deletableTransactions.map((transaction, index) => (
                   <tr key={index}>
                     <td>
                       <input
