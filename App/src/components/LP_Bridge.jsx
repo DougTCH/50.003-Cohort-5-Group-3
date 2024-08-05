@@ -234,8 +234,8 @@ const Bridge = ({ options, customStyles }) => {
       const transaction_date = formatDateToDDMMYY(new Date());
 
       const data = {
-        "app_id": "CITY_BANK",
-        "loyalty_pid": selectedOption ? selectedOption.label : "any",
+        "app_id": "FETCH",
+        "loyalty_pid": selectedOption ? selectedOption.value : "any",
         "user_id": userData.user_id,
         "member_id": inputValue1,
         "member_first": userData.firstName,
