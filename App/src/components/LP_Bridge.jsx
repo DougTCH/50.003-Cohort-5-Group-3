@@ -4,8 +4,11 @@ import Collapsible from 'react-collapsible';
 import Modal from 'react-modal';
 import { getUserData } from '../../utils/userdata';
 import './LP_Bridge.css';
-import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints } from '../../utils/api.jsx';
+import { fetchLoyaltyPrograms, fetchUserPoints, sendTransaction, updateUserPoints, notifyServer } from '../../utils/api.jsx';
 import arrowImage from '../assets/UI_ASSETS/UI_BLUE_DROPDOWN_ARROW.svg';
+import axios from 'axios';
+
+const publicVapidKey = 'BP_9uRZDQD-6I_BQAmLVYRMIw3FG-oQohuRXAwXX924yysDAEXBHrstsr--5GeEDm1pq2oHvdbQyevtYfc-34FQ';
 
 const tiers = [
   'Bronze',
@@ -255,7 +258,18 @@ const Bridge = ({ options, customStyles }) => {
         data.additional_info,
       );
 
-      console.log('Transaction successful:', result);
+      console.log('Transaction MADE:', result);
+      // suscribe to push notif for that transaction
+      const subscription = await subscribeUser(data.ref_num);
+      if (subscription) {
+        console.log('User subscribed:', subscription);
+      }
+      //notif response
+      const notificationResponse = await notifyServer(data.ref_num);
+      if (notificationResponse) {
+        console.log('Notification response:', notificationResponse);
+      }
+      console.log('Transaction SUCCESFUL');
       setTransactionMessage("Transaction Successful!");
       setTimeout(function() {
         location.reload();
@@ -267,6 +281,62 @@ const Bridge = ({ options, customStyles }) => {
       setTransactionMessage('');
     }
   };
+
+  async function subscribeUser(refNum) {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+      });
+
+      const subscriptionData = {
+          ref_num: refNum,
+          endpoint: subscription.endpoint,
+          keys: {
+              p256dh: arrayBufferToBase64(subscription.getKey('p256dh')),
+              auth: arrayBufferToBase64(subscription.getKey('auth'))
+          }
+      };
+
+      const subscribeResponse = await axios.post('http://localhost:3000/push/subscribe', {
+        ref_num: refNum,
+        subscription: subscriptionData
+      }, {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+
+      if (subscribeResponse.status === 200) {
+        console.log('User subscribed:', subscribeResponse.data);
+      } else {
+          console.error('Error subscribing user:', subscribeResponse.data);
+      }
+    }
+  }
+
+
+  function arrayBufferToBase64(buffer) {
+    const binary = String.fromCharCode.apply(null, new Uint8Array(buffer));
+    return btoa(binary);
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+          outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+  }
+
+
+
+  
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
