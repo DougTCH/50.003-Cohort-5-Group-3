@@ -90,3 +90,20 @@
     width: 100%; /* Ensure it takes the full width */
     box-sizing: border-box; /* Include padding and border in element's total width and height */
 }
+
+.user-info-title {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+.user-info-text {
+color: #333;
+font-size: 1.2em;
+margin: 10px 0;
+}
+
+.user-info-text span {
+font-weight: bold;
+color: #333;
+}

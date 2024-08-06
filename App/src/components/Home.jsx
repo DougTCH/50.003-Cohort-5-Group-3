@@ -99,11 +99,11 @@ function Home() {
         </div>
       </div>
       <div className="user-info-container">
-        <h1>Welcome Back to FETCH!</h1>
-        <p>Hello, {userData.firstName} {userData.lastName}.</p>
-        <p>You have, {userData.points} points.</p>
-        <p>Membership Id is {userData.user_id}.</p>
-        <p> TC token is {sessionStorage.getItem('tctoken')}</p>
+        <h1 className="user-info-title">Welcome Back to FETCH!</h1>
+        <p className="user-info-text">Hello, {userData.firstName} {userData.lastName}.</p>
+        <p className="user-info-text">You have {userData.points} points.</p>
+        <p className="user-info-text">Membership ID is {userData.user_id}.</p>
+        <p className="user-info-text">TC token is {sessionStorage.getItem('tctoken')}</p>
       </div>
     </div>
   );  
